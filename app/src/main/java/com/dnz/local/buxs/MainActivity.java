@@ -46,4 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+
+    public void toFastFood(View view){
+
+    }
+
+    public void toMarketPlace(View view){
+
+    }
 }

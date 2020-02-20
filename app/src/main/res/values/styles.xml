@@ -7,4 +7,15 @@
         <item name="colorPrimaryDark">@color/col1</item>
     </style>
 
+    <style name="text_white">
+        <item name="android:textColor">@color/white</item>
+
+    </style>
+
+    <style name="center_text_white">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24dp</item>
+    </style>
+
 </resources>

@@ -4,4 +4,7 @@
     <color name="col2">#F56314</color>
     <color name="white">#FFFFFF</color>
     <color name="colorPrimaryDark">#629B65</color>
+
+    <color name="yellow">#EDC024</color>
+    <color name="orange">#ED9D24</color>
 </resources>

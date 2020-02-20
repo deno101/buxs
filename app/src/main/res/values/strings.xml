@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">buxs</string>
     <string name="app_name_alt">Bux$</string>
+    <string name="copyright_msg">© 2020. Bux$ devs</string>
+
 </resources>
