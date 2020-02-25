@@ -2,6 +2,7 @@ package com.dnz.local.buxs;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     ImageView user,dotsVert;
+
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("Clicked User");
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
 
