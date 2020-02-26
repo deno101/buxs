@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".SignupActivity">
 
     <LinearLayout
         android:id="@+id/navbar"
@@ -26,7 +26,7 @@
             android:layout_weight="7"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
-            android:text="@string/login_header"
+            android:text="@string/Signup_header"
             android:textColor="@color/white"
             android:textSize="24sp" />
 
@@ -34,7 +34,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="testNet"
             android:src="@drawable/ic_more_vert_black_24dp" />
     </LinearLayout>
 
@@ -55,6 +54,27 @@
             android:hint="Username" />
 
         <EditText
+            android:id="@+id/first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:hint="FirstName" />
+
+        <EditText
+            android:id="@+id/last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:hint="Lastname" />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:hint="Email" />
+
+        <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,7 +85,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fields"
@@ -74,28 +93,7 @@
         android:layout_marginVertical="8dp"
 
         android:background="@drawable/round_bg_yellow"
-        android:onClick="login"
-        android:text="@string/login_header" />
-
-    <LinearLayout
-        android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/submit_btn">
-
-        <TextView
-            android:layout_margin="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no_account"/>
-        <TextView
-            android:layout_margin="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Signup_header"
-            android:textColor="@android:color/holo_blue_dark"
-            android:onClick="toSignup"/>
-    </LinearLayout>
+        android:onClick="signUp"
+        android:text="@string/submit"/>
 
 </RelativeLayout>

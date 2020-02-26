@@ -2,11 +2,14 @@
     <string name="app_name">buxs</string>
     <string name="app_name_alt">Bux$</string>
 
-<!--    start activity-->
+    <!--    start activity-->
     <string name="copyright_msg">© 2020. Bux$ devs</string>
 
-<!--    login activity-->
+    <!--    login activity-->
     <string name="login_header">Login</string>
 
-
+<!--    Signup Activity-->
+    <string name="Signup_header">SignUp</string>
+    <string name="submit">Submit</string>
+    <string name="no_account">No account?</string>
 </resources>

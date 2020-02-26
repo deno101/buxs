@@ -2,7 +2,6 @@ package com.dnz.local.buxs;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,21 +24,19 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+public class SignupActivity extends AppCompatActivity {
 
-public class LoginActivity extends AppCompatActivity {
+    private final String LOG_TAG = SignupActivity.class.getSimpleName();
+    public final String URL = "http://192.168.43.2:443/signup/";
 
-    private final String LOG_TAG = LoginActivity.class.getSimpleName();
-    private final String URL = "http://192.168.43.2:443/login/";
-    private EditText usernameField;
-    private EditText passwordField;
-
-    //    request Queue for http connections
-    RequestQueue requestQueue;
+    private EditText usernameField, firstNameField, lastNameField, emailField,
+                passwordField;
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_signup);
 
         // Change color of status bar
         Window window = this.getWindow();
@@ -47,9 +44,11 @@ public class LoginActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        // Initialize view components
-        passwordField = findViewById(R.id.password);
         usernameField = findViewById(R.id.username);
+        firstNameField = findViewById(R.id.first_name);
+        lastNameField = findViewById(R.id.last_name);
+        emailField = findViewById(R.id.email);
+        passwordField = findViewById(R.id.password);
 
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
@@ -58,18 +57,17 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.start();
     }
 
-    public void goBack(View view) {
+    public void goBack(View view){
         finish();
     }
 
-    public void testNet(View view) {
+    public void signUp(View view){
 
-    }
-
-    public void login(View view) {
-        // Get Values of EditText fields
-        final String password = passwordField.getText().toString();
-        final String username = usernameField.getText().toString();
+        final String username = usernameField.getText().toString(),
+                        password = passwordField.getText().toString(),
+                        fName = firstNameField.getText().toString(),
+                        lName = lastNameField.getText().toString(),
+                        email = emailField.getText().toString();
 
         StringRequest request = new StringRequest(Request.Method.POST, URL,
 
@@ -80,11 +78,14 @@ public class LoginActivity extends AppCompatActivity {
 
                         //TODO :SET THE USER TO BE LOGGED IN, DESTROY ACTIVITY TO PREVIOUS IN STACK
 
-
                         passwordField.setText("");
                         usernameField.setText("");
+                        firstNameField.setText("");
+                        lastNameField.setText("");
+                        emailField.setText("");
                     }
                 },
+
 
                 new Response.ErrorListener() {
                     @Override
@@ -100,6 +101,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 params.put("username", username);
                 params.put("password", password);
+                params.put("first_name", fName);
+                params.put("last_name", lName);
+                params.put("email", email);
+
                 return params;
             }
         };
@@ -107,10 +112,4 @@ public class LoginActivity extends AppCompatActivity {
         this.requestQueue.add(request);
     }
 
-    public void toSignup(View view){
-        this.requestQueue.stop();
-        startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-        finish();
-    }
 }
-
