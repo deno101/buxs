@@ -10,6 +10,8 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.dnz.local.buxs.MarketPlace.MarketPlaceActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     ImageView user,dotsVert;
@@ -56,6 +58,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toMarketPlace(View view){
-
+        startActivity(new Intent(MainActivity.this, MarketPlaceActivity.class));
     }
 }

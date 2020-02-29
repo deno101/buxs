@@ -8,7 +8,7 @@
     <!--    login activity-->
     <string name="login_header">Login</string>
 
-<!--    Signup Activity-->
+    <!--    Signup Activity-->
     <string name="Signup_header">SignUp</string>
     <string name="submit">Submit</string>
     <string name="no_account">No account?</string>
