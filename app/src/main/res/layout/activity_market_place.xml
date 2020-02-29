@@ -6,7 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MarketPlace.MarketPlaceActivity">
+    <LinearLayout
+        android:id="@+id/status_bar"
+        android:paddingVertical="8dp"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/col1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="20"
+            android:text="@string/app_name_alt"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            app:fontFamily="@font/audiowide" />
+
+        <ImageView
+            android:id="@+id/user"
+            android:layout_marginTop="8dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_person_black_24dp"
+            />
+
+        <ImageView
+            android:id="@+id/dots_vert"
+            android:layout_marginTop="8dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_more_vert_black_24dp" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@id/status_bar"
         android:id="@+id/recyclerview_market_place"
         android:layout_height="match_parent"
         android:layout_width="match_parent"

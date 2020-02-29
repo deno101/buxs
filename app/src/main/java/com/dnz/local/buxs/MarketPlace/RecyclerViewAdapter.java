@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.MarketPlace;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<Integer> thumbnail= new ArrayList<>();
+    private ArrayList<Bitmap> thumbnail= new ArrayList<>();
     private ArrayList<String> itemName = new ArrayList<>();
     private  ArrayList<Integer> price = new ArrayList<>();
     private Context context;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Integer> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {
+    public RecyclerViewAdapter(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {
         this.thumbnail = thumbnail;
         this.itemName = itemName;
         this.price = price;
@@ -42,7 +43,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
-        holder.thumbnailImage.setImageResource(this.thumbnail.get(position));
+        try {
+            holder.thumbnailImage.setImageBitmap(this.thumbnail.get(position));
+        }catch (Exception e){
+            Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+            holder.thumbnailImage.setImageBitmap(null);
+        }
         holder.itemName.setText(this.itemName.get(position));
 
         Log.d(TAG, "onBindViewHolder: success");
@@ -81,5 +87,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Log.d(TAG, "ViewHolder: ++++container");
             }
         }
+    }
+
+    public void refresh(ArrayList<Bitmap> thumbnail){
+        this.thumbnail = thumbnail;
+
+        notifyDataSetChanged();
     }
 }

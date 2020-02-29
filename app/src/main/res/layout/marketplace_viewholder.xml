@@ -3,7 +3,7 @@
     android:id="@+id/container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="130dp">
 
     <ImageView
         android:id="@+id/thumbnail_image"
@@ -31,6 +31,13 @@
         android:layout_toRightOf="@id/thumbnail_image"
         android:text="Dummy price"
         android:layout_marginLeft="16dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/grey"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="5dp"/>
 
 
 </RelativeLayout>
