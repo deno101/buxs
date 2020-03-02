@@ -106,7 +106,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
                                         thumbnail.add(response);
                                         viewAdapter.notifyDataSetChanged();
                                     }
-                                }, 1024, 1024, null, new Response.ErrorListener() {
+                                }, 1024, 1024, null,
+                                        new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
 

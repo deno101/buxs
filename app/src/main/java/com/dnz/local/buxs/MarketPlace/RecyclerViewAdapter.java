@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<Bitmap> thumbnail= new ArrayList<>();
+    private ArrayList<Bitmap> thumbnail = new ArrayList<>();
     private ArrayList<String> itemName = new ArrayList<>();
-    private  ArrayList<Integer> price = new ArrayList<>();
+    private ArrayList<Integer> price = new ArrayList<>();
     private Context context;
 
     public RecyclerViewAdapter(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {
@@ -36,7 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.marketplace_viewholder,parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.marketplace_viewholder, parent, false);
         return new ViewHolder(view);
     }
 
@@ -45,35 +45,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d(TAG, "onBindViewHolder: called");
         try {
             holder.thumbnailImage.setImageBitmap(this.thumbnail.get(position));
-        }catch (Exception e){
-            Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "onBindViewHolder: " + e.getMessage());
             holder.thumbnailImage.setImageBitmap(null);
         }
         holder.itemName.setText(this.itemName.get(position));
 
         Log.d(TAG, "onBindViewHolder: success");
         NumberFormat format = NumberFormat.getCurrencyInstance();
-        format.setCurrency(Currency.getInstance("KSH"));
+        format.setCurrency(Currency.getInstance("USD"));
         holder.price.setText(format.format((double) this.price.get(position)));
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: "+ position);
+                Log.d(TAG, "onClick: " + position);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: "+thumbnail.size());
+        Log.d(TAG, "getItemCount: " + thumbnail.size());
         return 10;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView thumbnailImage;
-        TextView price,itemName;
+        TextView price, itemName;
         RelativeLayout container;
 
         public ViewHolder(@NonNull View itemView) {
@@ -83,13 +83,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             price = itemView.findViewById(R.id.price);
             itemName = itemView.findViewById(R.id.item_name);
             container = itemView.findViewById(R.id.container);
-            if(container != null) {
+            if (container != null) {
                 Log.d(TAG, "ViewHolder: ++++container");
             }
         }
     }
 
-    public void refresh(ArrayList<Bitmap> thumbnail){
+    public void refresh(ArrayList<Bitmap> thumbnail) {
         this.thumbnail = thumbnail;
 
         notifyDataSetChanged();
