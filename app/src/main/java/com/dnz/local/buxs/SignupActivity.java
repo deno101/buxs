@@ -27,7 +27,7 @@ import java.util.Map;
 public class SignupActivity extends AppCompatActivity {
 
     private final String LOG_TAG = SignupActivity.class.getSimpleName();
-    public final String URL = "http://192.168.43.2:443/signup/";
+    public final String URL = "http://165.22.222.126:443/signup/";
 
     private EditText usernameField, firstNameField, lastNameField, emailField,
                 passwordField;

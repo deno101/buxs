@@ -33,8 +33,8 @@ import java.util.Iterator;
 public class MarketPlaceActivity extends AppCompatActivity {
 
     private static final String TAG = "MarketPlaceActivity";
-    private final String URL = "http://192.168.43.2:443/getMP/";
-    private String imgurl = "http://192.168.43.2:443/img/?path=";
+    private final String URL = "http://165.22.222.126:443/getMP/";
+    private String imgurl = "http://165.22.222.126:443/img/?path=";
     private ArrayList<Bitmap> thumbnail = new ArrayList<>();
     private ArrayList<String> itemName = new ArrayList<>();
     private ArrayList<Integer> price = new ArrayList<>();

@@ -29,7 +29,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private final String LOG_TAG = LoginActivity.class.getSimpleName();
-    private final String URL = "http://192.168.43.2:443/login/";
+    private final String URL = "http://165.22.222.126:443/login/";
     private EditText usernameField;
     private EditText passwordField;
 
