@@ -54,7 +54,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
 
-        requestQueue = new RequestQueue(cache, net);
+        requestQueue = new RequestQueue(cache, net,1);
         requestQueue.start();
 
         // Create progress bar showing content loading
