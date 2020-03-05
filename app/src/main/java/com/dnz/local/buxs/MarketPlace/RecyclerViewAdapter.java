@@ -42,16 +42,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder: called");
         try {
             holder.thumbnailImage.setImageBitmap(this.thumbnail.get(position));
         } catch (Exception e) {
-            Log.d(TAG, "onBindViewHolder: " + e.getMessage());
             holder.thumbnailImage.setImageBitmap(null);
         }
         holder.itemName.setText(this.itemName.get(position));
 
-        Log.d(TAG, "onBindViewHolder: success");
         NumberFormat format = NumberFormat.getCurrencyInstance();
         format.setCurrency(Currency.getInstance("USD"));
         holder.price.setText(format.format((double) this.price.get(position)));
@@ -59,7 +56,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: " + position);
+                //Todo: Open new activy mapping to detais of items
+
             }
         });
     }
@@ -67,7 +65,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
         int maxSize = Math.max(thumbnail.size(), Math.max(price.size(), itemName.size()));
-        Log.d(TAG, "getItemCount: " + maxSize);
         return maxSize;
     }
 
@@ -84,9 +81,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             price = itemView.findViewById(R.id.price);
             itemName = itemView.findViewById(R.id.item_name);
             container = itemView.findViewById(R.id.container);
-            if (container != null) {
-                Log.d(TAG, "ViewHolder: ++++container");
-            }
         }
     }
 

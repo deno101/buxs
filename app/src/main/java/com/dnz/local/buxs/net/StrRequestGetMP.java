@@ -60,8 +60,7 @@ public class StrRequestGetMP {
                                 placeActivity.requestQueue.add(imageRequest);
                             }
                         } catch (JSONException e) {
-                            Log.d(TAG, "onResponse: " + e.getMessage());
-
+                            Log.e(TAG, "JSONException: "+e.getMessage());
                         }
                     }
                 },

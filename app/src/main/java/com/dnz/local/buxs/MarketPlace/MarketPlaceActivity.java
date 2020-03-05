@@ -69,7 +69,6 @@ public class MarketPlaceActivity extends AppCompatActivity {
     }
 
     public void initRecyclerView() {
-        Log.d(TAG, "initRecyclerView: ...called");
         recyclerView = findViewById(R.id.recyclerview_market_place);
         viewAdapter = new RecyclerViewAdapter(this, thumbnail, itemName, price);
         recyclerView.setAdapter(viewAdapter);
@@ -85,7 +84,6 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
                 // check if reach end of recycler view
                 if(!recyclerView.canScrollVertically(1)){
-                    // TODO: make new get requests to server
                     strRequestGetMP.makeRequest(10);
                 }
             }
@@ -93,7 +91,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
     }
 
     public void makeToast(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,message,Toast.LENGTH_LONG).show();
     }
 }
 
