@@ -1,5 +1,6 @@
 package com.dnz.local.buxs.MarketPlace;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,37 +11,33 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.net.StrRequestGetMP;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MarketPlaceActivity extends AppCompatActivity {
 
-    private static final String TAG = "MarketPlaceActivity";
-    private final String URL = "http://165.22.222.126:443/getMP/";
-    private String imgurl = "http://165.22.222.126:443/img/?path=";
-    private ArrayList<Bitmap> thumbnail = new ArrayList<>();
-    private ArrayList<String> itemName = new ArrayList<>();
-    private ArrayList<Integer> price = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private RequestQueue requestQueue;
-    RecyclerViewAdapter viewAdapter;
+    public static final String TAG = "MarketPlaceActivity";
+    public final String URL = "http://165.22.222.126:443/getMP/";
+    public String imgurl = "http://165.22.222.126:443/img/?path=";
+    public ArrayList<Bitmap> thumbnail = new ArrayList<>();
+    public ArrayList<String> itemName = new ArrayList<>();
+    public ArrayList<Integer> price = new ArrayList<>();
+    public RecyclerView recyclerView;
+    public RequestQueue requestQueue;
+    public ProgressDialog progressDialog = null;
+    public RecyclerViewAdapter viewAdapter;
+    private StrRequestGetMP strRequestGetMP = new StrRequestGetMP(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,78 +57,18 @@ public class MarketPlaceActivity extends AppCompatActivity {
         requestQueue = new RequestQueue(cache, net);
         requestQueue.start();
 
-        fetchContent();
-    }
-
-//    private void initList() {
-//        for (int i = 0; i < 10; i++) {
-//            this.thumbnail.add(R.drawable.ic_keyboard_black_50dp);
-//        }
-//
-//        for (int i = 0; i < 10; i++) {
-//            this.itemName.add("Test: " + i);
-//        }
-//
-//        for (int i = 0; i < 10; i++) {
-//            this.price.add((int) (Math.random() * 100));
-//        }
-//    }
-
-    private void fetchContent() {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
+        // Create progress bar showing content loading
+        progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Fetching Data");
         progressDialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressDialog.dismiss();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response.trim());
-
-                            Iterator<String> stringIterator = jsonObject.keys();
-
-                            while (stringIterator.hasNext()){
-                                JSONObject item = jsonObject.getJSONObject(stringIterator.next());
-
-                                //get all the individual items needed to dispaly in recycler view
-                                price.add(item.getInt("price"));
-                                itemName.add(item.getString("name"));
-
-                                String url = imgurl+item.getString("image_url");
-                                ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
-                                    @Override
-                                    public void onResponse(Bitmap response) {
-                                        thumbnail.add(response);
-                                        viewAdapter.notifyDataSetChanged();
-                                    }
-                                }, 1024, 1024, null,
-                                        new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-
-                                    }
-                                });
-                                requestQueue.add(imageRequest);
-                            }
-                        } catch (JSONException e) {
-                            Log.d(TAG, "onResponse: " + e.getMessage());
-
-                        }
-                        initRecyclerView();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                });
-        requestQueue.add(stringRequest);
+        // Initialize recycler view with adapter/Layout
+        initRecyclerView();
+        // Make http request with length 10
+        strRequestGetMP.makeRequest(10);
     }
 
-    private void initRecyclerView() {
+    public void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: ...called");
         recyclerView = findViewById(R.id.recyclerview_market_place);
         viewAdapter = new RecyclerViewAdapter(this, thumbnail, itemName, price);
@@ -139,6 +76,24 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        //Add scroll listener to detect end
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                // check if reach end of recycler view
+                if(!recyclerView.canScrollVertically(1)){
+                    // TODO: make new get requests to server
+                    strRequestGetMP.makeRequest(10);
+                }
+            }
+        });
+    }
+
+    public void makeToast(String message){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 }
 

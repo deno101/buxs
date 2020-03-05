@@ -66,8 +66,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: " + thumbnail.size());
-        return 10;
+        int maxSize = Math.max(thumbnail.size(), Math.max(price.size(), itemName.size()));
+        Log.d(TAG, "getItemCount: " + maxSize);
+        return maxSize;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -89,9 +90,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public void refresh(ArrayList<Bitmap> thumbnail) {
+    public void refresh(ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {
         this.thumbnail = thumbnail;
+        this.itemName = itemName;
+        this.price = price;
 
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 }
