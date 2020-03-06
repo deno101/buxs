@@ -2,7 +2,6 @@ package com.dnz.local.buxs.MarketPlace;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<Bitmap> thumbnail = new ArrayList<>();
-    private ArrayList<String> itemName = new ArrayList<>();
-    private ArrayList<Integer> price = new ArrayList<>();
+    private ArrayList<Bitmap> thumbnail;
+    private ArrayList<String> itemName;
+    private ArrayList<Integer> price;
     private Context context;
 
     public RecyclerViewAdapter(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {

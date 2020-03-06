@@ -28,8 +28,8 @@ import java.util.ArrayList;
 public class MarketPlaceActivity extends AppCompatActivity {
 
     public static final String TAG = "MarketPlaceActivity";
-    public final String URL = "http://165.22.222.126:443/getMP/";
-    public String imgurl = "http://165.22.222.126:443/img/?path=";
+    public final String URL = "http://165.22.222.126:443/mplace/getMP/";
+    public String imgurl = "http://165.22.222.126:443/mplace/img/?path=";
     public ArrayList<Bitmap> thumbnail = new ArrayList<>();
     public ArrayList<String> itemName = new ArrayList<>();
     public ArrayList<Integer> price = new ArrayList<>();
