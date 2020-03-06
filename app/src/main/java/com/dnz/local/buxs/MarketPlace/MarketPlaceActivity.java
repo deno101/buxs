@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class MarketPlaceActivity extends AppCompatActivity {
 
     public static final String TAG = "MarketPlaceActivity";
-    public final String URL = "http://165.22.222.126:443/mplace/getMP/";
+    public final String URL = "http://165.22.222.126:443/mplace/gdata/";
     public String imgurl = "http://165.22.222.126:443/mplace/img/?path=";
     public ArrayList<Bitmap> thumbnail = new ArrayList<>();
     public ArrayList<String> itemName = new ArrayList<>();

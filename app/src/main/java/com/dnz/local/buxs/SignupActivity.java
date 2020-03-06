@@ -83,6 +83,9 @@ public class SignupActivity extends AppCompatActivity {
                         firstNameField.setText("");
                         lastNameField.setText("");
                         emailField.setText("");
+                        finish();
+
+                        //TODO: LOGIN USER
                     }
                 },
 
