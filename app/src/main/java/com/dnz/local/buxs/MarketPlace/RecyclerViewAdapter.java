@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.MarketPlace;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,8 +56,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Todo: Open new activy mapping to detais of items
-
+                Intent intent = new Intent(context, MarketPlaceDescActivity.class);
+                context.startActivity(intent);
             }
         });
     }
