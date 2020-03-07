@@ -1,7 +1,6 @@
 package com.dnz.local.buxs.MarketPlace;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,11 @@ import androidx.viewpager.widget.ViewPager;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
-    private Context context;
+    private MarketPlaceDescActivity context;
     private ArrayList<Integer> bitmaps;
     private LayoutInflater inflater;
 
-    public ViewPagerAdapter(Context context, ArrayList<Integer> bitmaps) {
+    public ViewPagerAdapter(MarketPlaceDescActivity context, ArrayList<Integer> bitmaps) {
         this.context = context;
         this.bitmaps = bitmaps;
     }
@@ -47,9 +46,9 @@ public class ViewPagerAdapter extends PagerAdapter {
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
-
-        return  view;
+        return view;
     }
+
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

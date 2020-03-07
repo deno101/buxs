@@ -12,4 +12,7 @@
     <string name="Signup_header">SignUp</string>
     <string name="submit">Submit</string>
     <string name="no_account">No account?</string>
+
+    <!--    market place desc-->
+    <string name="buy_now_btn">buy now</string>
 </resources>

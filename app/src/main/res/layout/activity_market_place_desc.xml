@@ -13,4 +13,89 @@
 
     </androidx.viewpager.widget.ViewPager>
 
+    <LinearLayout
+        android:id="@+id/slider_indicators"
+        android:orientation="horizontal"
+        android:layout_width="40dp"
+        android:layout_height="13dp"
+        android:layout_below="@id/view_pager"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-20dp">
+
+        <View
+            android:id="@+id/item_1"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/image_slider_bg"
+            android:layout_margin="1.5dp"/>
+
+        <View
+            android:id="@+id/item_2"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:background="@drawable/image_slider_bg"
+            android:layout_margin="1.5dp"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:id="@+id/item_3"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:background="@drawable/image_slider_bg"
+            android:layout_margin="1.5dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/image_slider_border_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/grey"
+        android:layout_below="@id/view_pager"/>
+
+    <ScrollView
+        android:id="@+id/marketplace_desc_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/image_slider_border_bottom"
+        android:layout_above="@id/bottom_bar_border">
+
+    </ScrollView>
+
+
+    <View
+        android:id="@+id/bottom_bar_border"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/grey"
+        android:layout_above="@id/bottom_bar"/>
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+
+        <ImageButton
+            android:layout_marginHorizontal="5dp"
+            android:layout_weight="1"
+            android:id="@+id/add_to_cart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_cart_orange"
+            android:background="@drawable/cart_btn_bg"/>
+
+        <Button
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="0dp"
+            android:layout_weight="3"
+            android:id="@+id/buy_now"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/buy_now_btn"/>
+
+    </LinearLayout>
+
 </RelativeLayout>
