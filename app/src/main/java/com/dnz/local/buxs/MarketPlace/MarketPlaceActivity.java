@@ -33,6 +33,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
     public ArrayList<Bitmap> thumbnail = new ArrayList<>();
     public ArrayList<String> itemName = new ArrayList<>();
     public ArrayList<Integer> price = new ArrayList<>();
+    public ArrayList<Integer> id = new ArrayList<>();
+
     public RecyclerView recyclerView;
     public RequestQueue requestQueue;
     public ProgressDialog progressDialog = null;
@@ -70,7 +72,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
     public void initRecyclerView() {
         recyclerView = findViewById(R.id.recyclerview_market_place);
-        viewAdapter = new RecyclerViewAdapter(this, thumbnail, itemName, price);
+        viewAdapter = new RecyclerViewAdapter(this, thumbnail, itemName, price, id);
         recyclerView.setAdapter(viewAdapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);

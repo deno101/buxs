@@ -6,14 +6,30 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,12 +39,20 @@ import java.util.TimerTask;
 
 public class MarketPlaceDescActivity extends AppCompatActivity {
 
+    private static final String TAG = "MarketPlaceDescActivity";
+
     private ViewPager viewPager;
-    private ArrayList<Integer> integers =  new ArrayList<>();
+    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
     public View[] selectorViews = new View[3];
     Map<String, String> stringMap = new HashMap<>();
-
+    private String url = "http://165.22.222.126:443/mplace/gdesc?pid=";
+    private ViewPagerAdapter pagerAdapter;
     public TextView productDesc, productPrice, productName, productBrand;
+    public String imgurl = "http://165.22.222.126:443/mplace/img/?path=";
+
+    private RequestQueue requestQueue;
+
+    private String img1, img2, img3;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -48,8 +72,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.view_pager);
 
-        initImages();
-        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(this, integers);
+        pagerAdapter = new ViewPagerAdapter(this, bitmaps);
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -61,7 +84,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 // Reset all dots to unselected
-                for (View x: selectorViews){
+                for (View x : selectorViews) {
                     x.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.image_slider_bg));
                 }
 
@@ -80,7 +103,10 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new MyTimer(), 2000, 4000);
 
-        initData();
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Network net = new BasicNetwork(new HurlStack());
+
+        requestQueue = new RequestQueue(cache, net);
 
         //init vars
         productPrice = findViewById(R.id.product_price);
@@ -88,16 +114,88 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         productDesc = findViewById(R.id.product_description);
         productName = findViewById(R.id.product_name);
 
-        productName.setText(stringMap.get("product_name"));
-        productDesc.setText(stringMap.get("product_desc"));
-        productPrice.setText(stringMap.get("product_price"));
-        productBrand.setText(stringMap.get("product_brand"));
+        requestQueue.start();
+        fetchData();
     }
 
-    private void initImages(){
-        for(int i = 0; i < 3; i++){
-            integers.add(R.drawable.ic_keyboard_black_50dp);
-        }
+    private void fetchData() {
+        String img = getIntent().getStringExtra("PRODUCT_ID");
+        url += img;
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            productPrice.setText(response.getString("price"));
+                            productDesc.setText(response.getString("description"));
+                            productBrand.setText(response.getString("brand"));
+                            productName.setText(response.getString("name"));
+
+                            img1 = response.getString("image_url1");
+                            img2 = response.getString("image_url2");
+                            img3 = response.getString("image_url3");
+                        } catch (JSONException e) {
+                            Log.d(TAG, "JSONexception " + e.getMessage());
+                        }
+                        ImageRequest imageRequest = new ImageRequest(imgurl + img1,
+                                new Response.Listener<Bitmap>() {
+                                    @Override
+                                    public void onResponse(Bitmap response) {
+                                        bitmaps.add(response);
+                                        pagerAdapter.refresh(bitmaps);
+                                    }
+                                }, 1024, 1024, null,
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(TAG, "onErrorResponse: "+error.toString());
+                                    }
+                                });
+
+                        requestQueue.add(imageRequest);
+
+                        ImageRequest imageRequest1 = new ImageRequest(imgurl + img2,
+                                new Response.Listener<Bitmap>() {
+                                    @Override
+                                    public void onResponse(Bitmap response) {
+                                        bitmaps.add(response);
+                                        pagerAdapter.refresh(bitmaps);
+                                    }
+                                }, 1024, 1024, null,
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(TAG, "onErrorResponse: "+error.getMessage());
+                                    }
+                                });
+
+                        requestQueue.add(imageRequest1);
+                        ImageRequest imageRequest2 = new ImageRequest(imgurl + img3,
+                                new Response.Listener<Bitmap>() {
+                                    @Override
+                                    public void onResponse(Bitmap response) {
+                                        bitmaps.add(response);
+                                        pagerAdapter.refresh(bitmaps);
+                                    }
+                                }, 1024, 1024, null,
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(TAG, "onErrorResponse: "+error.getMessage());
+                                    }
+                                });
+
+                        requestQueue.add(imageRequest2);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+        this.requestQueue.add(objectRequest);
+
     }
 
     // Timer to handle auto scroll if images
@@ -108,11 +206,11 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
             MarketPlaceDescActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (viewPager.getCurrentItem() == 0){
+                    if (viewPager.getCurrentItem() == 0) {
                         viewPager.setCurrentItem(1);
-                    }else if(viewPager.getCurrentItem() == 1){
+                    } else if (viewPager.getCurrentItem() == 1) {
                         viewPager.setCurrentItem(2);
-                    }else{
+                    } else {
                         viewPager.setCurrentItem(0);
                     }
                 }
@@ -120,11 +218,4 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         }
     }
 
-    private void initData(){
-        stringMap.put("product_brand", "Nike");
-        stringMap.put("product_name", "NikeAirs");
-
-        stringMap.put("product_price", "KSH 250.00");
-        stringMap.put("product_desc", "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-    }
 }

@@ -24,13 +24,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<Bitmap> thumbnail;
     private ArrayList<String> itemName;
     private ArrayList<Integer> price;
+    private ArrayList<Integer> id;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {
+    public RecyclerViewAdapter(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price, ArrayList<Integer> id) {
         this.thumbnail = thumbnail;
         this.itemName = itemName;
         this.price = price;
         this.context = context;
+        this.id = id;
     }
 
     @NonNull
@@ -57,6 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MarketPlaceDescActivity.class);
+                intent.putExtra("PRODUCT_ID",String.valueOf(id.get(position)));
                 context.startActivity(intent);
             }
         });

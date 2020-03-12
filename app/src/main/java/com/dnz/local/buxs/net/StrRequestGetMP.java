@@ -41,6 +41,7 @@ public class StrRequestGetMP {
                                 //get all the individual items needed to dispaly in recycler view
                                 placeActivity.price.add(item.getInt("price"));
                                 placeActivity.itemName.add(item.getString("name"));
+                                placeActivity.id.add(item.getInt("id"));
 
                                 String url = placeActivity.imgurl+item.getString("image_url1");
                                 ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {

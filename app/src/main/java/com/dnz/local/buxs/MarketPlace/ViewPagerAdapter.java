@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.MarketPlace;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,10 @@ import androidx.viewpager.widget.ViewPager;
 public class ViewPagerAdapter extends PagerAdapter {
 
     private MarketPlaceDescActivity context;
-    private ArrayList<Integer> bitmaps;
+    private ArrayList<Bitmap> bitmaps;
     private LayoutInflater inflater;
 
-    public ViewPagerAdapter(MarketPlaceDescActivity context, ArrayList<Integer> bitmaps) {
+    public ViewPagerAdapter(MarketPlaceDescActivity context, ArrayList<Bitmap> bitmaps) {
         this.context = context;
         this.bitmaps = bitmaps;
     }
@@ -42,7 +43,11 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = inflater.inflate(R.layout.adapter_layout, null);
 
         ImageView imageView = view.findViewById(R.id.image_view_adapter);
-        imageView.setImageResource(bitmaps.get(position));
+        try {
+            imageView.setImageBitmap(bitmaps.get(position));
+        } catch (IndexOutOfBoundsException e) {
+            imageView.setImageBitmap(null);
+        }
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
@@ -56,5 +61,10 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = (View) object;
 
         viewPager.removeView(view);
+    }
+
+    public void refresh(ArrayList<Bitmap> bitmaps) {
+        this.bitmaps = bitmaps;
+        notifyDataSetChanged();
     }
 }
