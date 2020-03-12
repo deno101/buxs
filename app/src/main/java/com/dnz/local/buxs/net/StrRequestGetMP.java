@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
@@ -43,7 +42,7 @@ public class StrRequestGetMP {
                                 placeActivity.price.add(item.getInt("price"));
                                 placeActivity.itemName.add(item.getString("name"));
 
-                                String url = placeActivity.imgurl+item.getString("image_url");
+                                String url = placeActivity.imgurl+item.getString("image_url1");
                                 ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
                                     @Override
                                     public void onResponse(Bitmap response) {
@@ -54,7 +53,9 @@ public class StrRequestGetMP {
                                         new Response.ErrorListener() {
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
-                                                placeActivity.makeToast("Error check your internet Connection");
+                                                //placeActivity.makeToast("Error check your internet Connection");
+                                                placeActivity.viewAdapter.refresh(placeActivity.thumbnail, placeActivity.itemName, placeActivity.price);
+
                                             }
                                         });
                                 placeActivity.requestQueue.add(imageRequest);

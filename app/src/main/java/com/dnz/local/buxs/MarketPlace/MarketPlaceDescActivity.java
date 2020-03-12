@@ -11,10 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,8 +26,11 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private ArrayList<Integer> integers =  new ArrayList<>();
     public View[] selectorViews = new View[3];
+    Map<String, String> stringMap = new HashMap<>();
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public TextView productDesc, productPrice, productName, productBrand;
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +79,19 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new MyTimer(), 2000, 4000);
+
+        initData();
+
+        //init vars
+        productPrice = findViewById(R.id.product_price);
+        productBrand = findViewById(R.id.product_brand);
+        productDesc = findViewById(R.id.product_description);
+        productName = findViewById(R.id.product_name);
+
+        productName.setText(stringMap.get("product_name"));
+        productDesc.setText(stringMap.get("product_desc"));
+        productPrice.setText(stringMap.get("product_price"));
+        productBrand.setText(stringMap.get("product_brand"));
     }
 
     private void initImages(){
@@ -99,5 +118,13 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void initData(){
+        stringMap.put("product_brand", "Nike");
+        stringMap.put("product_name", "NikeAirs");
+
+        stringMap.put("product_price", "KSH 250.00");
+        stringMap.put("product_desc", "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
     }
 }
