@@ -21,7 +21,11 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
+import com.dnz.local.buxs.net.MyCookieStore;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private final String URL = "http://165.22.222.126:443/login/";
     private EditText usernameField;
     private EditText passwordField;
+    private static MyCookieStore cookieStore;
 
     //    request Queue for http connections
     RequestQueue requestQueue;
@@ -46,6 +51,9 @@ public class LoginActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+        cookieStore = MainActivity.getCookieStore();
+        CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(cookieManager);
 
         // Initialize view components
         passwordField = findViewById(R.id.password);

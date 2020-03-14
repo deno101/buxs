@@ -11,12 +11,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dnz.local.buxs.MarketPlace.MarketPlaceActivity;
+import com.dnz.local.buxs.net.MyCookieStore;
+
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
 
 public class MainActivity extends AppCompatActivity {
 
     ImageView user,dotsVert;
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static MyCookieStore cookieStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +31,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Window window = this.getWindow();
-//        set status bar for sdk > lollipop
+        // set status bar for sdk > lollipop
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+        cookieStore = new MyCookieStore(this, "cookieStore");
+        CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(cookieManager);
 
-//        add onclick listeners for image views
+        // add onclick listeners for image views
         user = findViewById(R.id.user);
         dotsVert = findViewById(R.id.dots_vert);
 
@@ -59,5 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void toMarketPlace(View view){
         startActivity(new Intent(MainActivity.this, MarketPlaceActivity.class));
+    }
+
+    public static MyCookieStore getCookieStore(){
+        return cookieStore;
     }
 }

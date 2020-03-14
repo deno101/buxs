@@ -20,7 +20,11 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
+import com.dnz.local.buxs.net.MyCookieStore;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText usernameField, firstNameField, lastNameField, emailField,
                 passwordField;
     private RequestQueue requestQueue;
+    private MyCookieStore cookieStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,10 @@ public class SignupActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
+        cookieStore = MainActivity.getCookieStore();
+        CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(cookieManager);
 
         usernameField = findViewById(R.id.username);
         firstNameField = findViewById(R.id.first_name);

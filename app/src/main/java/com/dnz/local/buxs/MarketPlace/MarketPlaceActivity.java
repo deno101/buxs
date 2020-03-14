@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.MarketPlace;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +19,20 @@ import com.android.volley.Network;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.Volley;
+import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.net.PersistentCookieStore;
 import com.dnz.local.buxs.net.StrRequestGetMP;
 
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class MarketPlaceActivity extends AppCompatActivity {
@@ -40,11 +50,16 @@ public class MarketPlaceActivity extends AppCompatActivity {
     public ProgressDialog progressDialog = null;
     public RecyclerViewAdapter viewAdapter;
     private StrRequestGetMP strRequestGetMP = new StrRequestGetMP(this);
+    private MyCookieStore cookieStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_place);
+
+        cookieStore = MainActivity.getCookieStore();
+        CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(cookieManager);
 
         Window window = this.getWindow();
 

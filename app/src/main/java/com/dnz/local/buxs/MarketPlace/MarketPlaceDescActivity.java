@@ -26,11 +26,16 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.net.MyCookieStore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,12 +58,17 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     private String img1, img2, img3;
+    private MyCookieStore cookieStore;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_place_desc);
+
+        cookieStore = MainActivity.getCookieStore();
+        CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(cookieManager);
 
         selectorViews[0] = findViewById(R.id.item_1);
         selectorViews[1] = findViewById(R.id.item_2);
@@ -69,6 +79,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
 
         viewPager = findViewById(R.id.view_pager);
 
