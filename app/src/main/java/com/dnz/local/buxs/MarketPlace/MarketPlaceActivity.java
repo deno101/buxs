@@ -61,6 +61,10 @@ public class MarketPlaceActivity extends AppCompatActivity {
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
+        if (cookieStore.getAuthenticator() != null){
+            //Todo: display username on status bar
+            Log.d(TAG, "onCreate: " + cookieStore.getAuthenticator().getUsername());
+        }
         Window window = this.getWindow();
 
         // set status bar for sdk > lollipop

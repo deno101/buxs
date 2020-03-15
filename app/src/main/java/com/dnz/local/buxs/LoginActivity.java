@@ -2,6 +2,7 @@ package com.dnz.local.buxs;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
@@ -23,6 +25,9 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.dnz.local.buxs.net.MyCookieStore;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -33,10 +38,12 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private final String LOG_TAG = LoginActivity.class.getSimpleName();
+    private static final String TAG = "LoginActivity";
     private final String URL = "http://165.22.222.126:443/login/";
     private EditText usernameField;
     private EditText passwordField;
     private static MyCookieStore cookieStore;
+    public LoginActivity context;
 
     //    request Queue for http connections
     RequestQueue requestQueue;
@@ -46,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        context = this;
         // Change color of status bar
         Window window = this.getWindow();
         if (Build.VERSION.SDK_INT >= 21) {
@@ -70,24 +78,34 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void testNet(View view) {
-
-    }
-
     public void login(View view) {
         // Get Values of EditText fields
         final String password = passwordField.getText().toString();
         final String username = usernameField.getText().toString();
+
+        //Todo: add Progress View showing progress
 
         StringRequest request = new StringRequest(Request.Method.POST, URL,
 
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d(LOG_TAG, response);
+                        Log.e(TAG, "onResponse: "+response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
 
-                        //TODO :SET THE USER TO BE LOGGED IN, DESTROY ACTIVITY TO PREVIOUS IN STACK
-
+                            int statusCode = jsonObject.getInt("code");
+                            if(statusCode == 200){
+                                context.finish();
+                            }else if (statusCode == 404){
+                                // TODO : TELL USER INVALID CREDENTIALS
+                                context.makeToast("Invalid credentials");
+                            }
+                        } catch (JSONException e) {
+                            context.makeToast("Invalid Response try again");
+                            Log.e(TAG, "onResponse: "+response);
+                            Log.e(TAG, "onResponse: ",e );
+                        }
 
                         passwordField.setText("");
                         usernameField.setText("");
@@ -119,6 +137,10 @@ public class LoginActivity extends AppCompatActivity {
         this.requestQueue.stop();
         startActivity(new Intent(LoginActivity.this, SignupActivity.class));
         finish();
+    }
+
+    public void makeToast(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
 

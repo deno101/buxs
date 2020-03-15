@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.dnz.local.buxs.auth.Authenticator;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -36,7 +37,11 @@ public class MyCookieStore implements CookieStore {
     private Context context;
     private CookieStore store;
     private String fileName;
+    private Authenticator authenticator;
 
+    public Authenticator getAuthenticator() {
+        return this.authenticator;
+    }
 
     public MyCookieStore(Context context, String fileName) {
         this.context = context;
@@ -69,7 +74,7 @@ public class MyCookieStore implements CookieStore {
     }
 
     private void getCookiesFromFile() {
-        String line = "";
+        String line;
         try {
             FileInputStream fin = context.openFileInput(fileName);
 
@@ -88,8 +93,12 @@ public class MyCookieStore implements CookieStore {
                 line = reader1.readLine();
             }
 
+            line = builder.toString();
+            Log.e(TAG, "getCookiesFromFile: "+ line);
+
         } catch (FileNotFoundException e) {
             Log.e(TAG, "getCookiesFromFile: ", e);
+            File file = new File(context.getFilesDir(), fileName);
             return;
         } catch (IOException e){
             Log.e(TAG, "getCookiesFromFile: ", e);
@@ -98,13 +107,16 @@ public class MyCookieStore implements CookieStore {
 
         // convert the string to Json then to Cookies
         try {
-            JSONObject jsonObject =  new JSONObject(line.trim());
+            JSONObject jsonObject =  new JSONObject(line);
             Iterator<String> stringIterator = jsonObject.keys();
 
             while (stringIterator.hasNext()){
                 JSONObject cookieInfo = jsonObject.getJSONObject(stringIterator.next());
                 String name = cookieInfo.getString("name");
                 String value = cookieInfo.getString("value");
+                if (name.equals("username")){
+                    authenticator = new Authenticator(value);
+                }
 
                 HttpCookie cookie = new HttpCookie(name, value);
                 cookie.setDomain(cookieInfo.getString("domain"));
@@ -114,7 +126,7 @@ public class MyCookieStore implements CookieStore {
                     cookie.setHttpOnly(cookieInfo.getBoolean("httpOnly"));
                 }
 
-                cookie.setMaxAge(cookieInfo.getInt("MaxAge"));
+                cookie.setMaxAge(cookieInfo.getInt("maxAge"));
                 cookie.setPath(cookieInfo.getString("path"));
                 cookie.setSecure(cookieInfo.getBoolean("secure"));
                 cookie.setDiscard(cookieInfo.getBoolean("toDiscard"));
@@ -130,6 +142,9 @@ public class MyCookieStore implements CookieStore {
     @Override
     public void add(URI uri, HttpCookie cookie) {
         store.add(URI.create(cookie.getDomain()), cookie);
+        if (cookie.getName().equals("username")){
+            authenticator = new Authenticator(cookie.getName());
+        }
         saveCookieToFile();
     }
 
