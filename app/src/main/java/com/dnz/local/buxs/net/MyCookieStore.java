@@ -23,7 +23,6 @@ import java.net.HttpCookie;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -114,9 +113,6 @@ public class MyCookieStore implements CookieStore {
                 JSONObject cookieInfo = jsonObject.getJSONObject(stringIterator.next());
                 String name = cookieInfo.getString("name");
                 String value = cookieInfo.getString("value");
-                if (name.equals("username")){
-                    authenticator = new Authenticator(value);
-                }
 
                 HttpCookie cookie = new HttpCookie(name, value);
                 cookie.setDomain(cookieInfo.getString("domain"));
@@ -143,7 +139,7 @@ public class MyCookieStore implements CookieStore {
     public void add(URI uri, HttpCookie cookie) {
         store.add(URI.create(cookie.getDomain()), cookie);
         if (cookie.getName().equals("username")){
-            authenticator = new Authenticator(cookie.getName());
+            authenticator = new Authenticator(cookie.getValue());
         }
         saveCookieToFile();
     }

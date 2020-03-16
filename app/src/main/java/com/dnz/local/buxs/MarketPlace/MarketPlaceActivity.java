@@ -7,11 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Cache;
@@ -22,6 +26,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.Volley;
+import com.dnz.local.buxs.LoginActivity;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.net.MyCookieStore;
@@ -36,6 +41,9 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class MarketPlaceActivity extends AppCompatActivity {
+
+    ImageView user,dotsVert;
+    TextView username;
 
     public static final String TAG = "MarketPlaceActivity";
     public final String URL = "http://165.22.222.126:443/mplace/gdata/";
@@ -61,9 +69,30 @@ public class MarketPlaceActivity extends AppCompatActivity {
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
-        if (cookieStore.getAuthenticator() != null){
-            //Todo: display username on status bar
-            Log.d(TAG, "onCreate: " + cookieStore.getAuthenticator().getUsername());
+        dotsVert = findViewById(R.id.dots_vert);
+        username = findViewById(R.id.username);
+        user = findViewById(R.id.user);
+
+        // check if a 'username' cookie exists the show username
+        if (cookieStore.getAuthenticator().isAuthenticated()) {
+            username.setText(cookieStore.getAuthenticator().getUsername());
+            username.setVisibility(View.VISIBLE);
+
+            user.setImageResource(R.drawable.ic_person_authenticated);
+            user.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Todo: show account information
+
+                }
+            });
+        }else {
+            user.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MarketPlaceActivity.this, LoginActivity.class));
+                }
+            });
         }
         Window window = this.getWindow();
 

@@ -27,22 +27,51 @@
             android:textSize="32sp"
             app:fontFamily="@font/audiowide" />
 
-        <ImageView
-            android:id="@+id/user"
-            android:layout_marginTop="8dp"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_person_black_24dp"
-            />
+        <RelativeLayout
+            android:id="@+id/user_info"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/dots_vert"
-            android:layout_marginTop="8dp"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_more_vert_black_24dp" />
+            <ImageView
+                android:id="@+id/user"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_person_black_24dp" />
+
+            <!--TODO: add a green button before the name-->
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/user"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible"
+                android:maxLength="10"
+                android:textColor="@color/white"
+                android:textSize="8sp">
+
+            </TextView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/dots_vert"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_more_vert_black_24dp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
