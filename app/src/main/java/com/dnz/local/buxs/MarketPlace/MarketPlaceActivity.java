@@ -2,7 +2,11 @@ package com.dnz.local.buxs.MarketPlace;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +36,8 @@ import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.PersistentCookieStore;
 import com.dnz.local.buxs.net.StrRequestGetMP;
+import com.dnz.local.buxs.utils.MyDrawerLayout;
+import com.google.android.material.navigation.NavigationView;
 
 
 import java.net.CookieHandler;
@@ -65,35 +71,33 @@ public class MarketPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_place);
 
+        new MyDrawerLayout(this).initDrawerLayout();
+
         cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
-        dotsVert = findViewById(R.id.dots_vert);
-        username = findViewById(R.id.username);
-        user = findViewById(R.id.user);
-
-        // check if a 'username' cookie exists the show username
-        if (cookieStore.getAuthenticator().isAuthenticated()) {
-            username.setText(cookieStore.getAuthenticator().getUsername());
-            username.setVisibility(View.VISIBLE);
-
-            user.setImageResource(R.drawable.ic_person_authenticated);
-            user.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Todo: show account information
-
-                }
-            });
-        }else {
-            user.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(MarketPlaceActivity.this, LoginActivity.class));
-                }
-            });
-        }
+//        // check if a 'username' cookie exists the show username
+//        if (cookieStore.getAuthenticator().isAuthenticated()) {
+//            username.setText(cookieStore.getAuthenticator().getUsername());
+//            username.setVisibility(View.VISIBLE);
+//
+//            user.setImageResource(R.drawable.ic_person_authenticated);
+//            user.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //Todo: show account information
+//
+//                }
+//            });
+//        }else {
+//            user.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    startActivity(new Intent(MarketPlaceActivity.this, LoginActivity.class));
+//                }
+//            });
+//        }
         Window window = this.getWindow();
 
         // set status bar for sdk > lollipop

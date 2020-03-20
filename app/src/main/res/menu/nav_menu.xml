@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/to_fast_food"
+            android:icon="@drawable/ic_local_dining_black_black_24dp"
+            android:title="Fast Food" />
+
+        <item
+            android:id="@+id/to_market_place"
+            android:title="Market place"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"/>
+    </group>
+
+    <item
+        android:id="@+id/account_section"
+        android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/account"
+                android:icon="@drawable/ic_account_circle_black_24dp"
+                android:title="Account" />
+            <item
+                android:id="@+id/upload_item"
+                android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                android:title="Upload product" />
+
+            <item
+                android:id="@+id/upgrade_account"
+                android:icon="@drawable/ic_account_upgrade_black_24dp"
+                android:title="Upgrade Account" />
+        </menu>
+
+    </item>
+
+    <item android:title="Utilities">
+
+        <menu>
+            <item
+                android:id="@+id/help_menu"
+                android:icon="@drawable/ic_help_black_24dp"
+                android:title="Help"/>
+
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Settings"/>
+        </menu>
+    </item>
+
+</menu>

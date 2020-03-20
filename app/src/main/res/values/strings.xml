@@ -15,4 +15,7 @@
 
     <!--    market place desc-->
     <string name="buy_now_btn">buy now</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>

@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.utils.MyDrawerLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +70,8 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
+
+        new MyDrawerLayout(this).initDrawerLayout();
 
         selectorViews[0] = findViewById(R.id.item_1);
         selectorViews[1] = findViewById(R.id.item_2);
