@@ -2,6 +2,7 @@ package com.dnz.local.buxs.MarketPlace;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,13 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 public class ViewPagerAdapter extends PagerAdapter {
+    private static final String TAG = "ViewPagerAdapter";
 
     private MarketPlaceDescActivity context;
-    private ArrayList<Bitmap> bitmaps;
     private LayoutInflater inflater;
 
-    public ViewPagerAdapter(MarketPlaceDescActivity context, ArrayList<Bitmap> bitmaps) {
+    public ViewPagerAdapter(MarketPlaceDescActivity context) {
         this.context = context;
-        this.bitmaps = bitmaps;
     }
 
     @Override
@@ -44,9 +44,11 @@ public class ViewPagerAdapter extends PagerAdapter {
 
         ImageView imageView = view.findViewById(R.id.image_view_adapter);
         try {
-            imageView.setImageBitmap(bitmaps.get(position));
+            imageView.setImageBitmap(context.bitmaps.get(position));
+            Log.d(TAG, "instantiateItem: instantiate item not null"+position);
         } catch (IndexOutOfBoundsException e) {
             imageView.setImageBitmap(null);
+            Log.d(TAG, "instantiateItem: instantiate item null"+position);
         }
 
         ViewPager viewPager = (ViewPager) container;
@@ -63,8 +65,8 @@ public class ViewPagerAdapter extends PagerAdapter {
         viewPager.removeView(view);
     }
 
-    public void refresh(ArrayList<Bitmap> bitmaps) {
-        this.bitmaps = bitmaps;
-        notifyDataSetChanged();
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 }

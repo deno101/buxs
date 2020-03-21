@@ -48,7 +48,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     private static final String TAG = "MarketPlaceDescActivity";
 
     private ViewPager viewPager;
-    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    public ArrayList<Bitmap> bitmaps = new ArrayList<>();
     public View[] selectorViews = new View[3];
     Map<String, String> stringMap = new HashMap<>();
     private String url = "http://165.22.222.126:443/mplace/gdesc?pid=";
@@ -86,7 +86,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.view_pager);
 
-        pagerAdapter = new ViewPagerAdapter(this, bitmaps);
+        pagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -115,12 +115,12 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         selectorViews[0].setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.image_slider_bg_onselect));
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new MyTimer(), 2000, 4000);
+        timer.scheduleAtFixedRate(new MyTimer(), 5000, 8000);
 
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
 
-        requestQueue = new RequestQueue(cache, net);
+        requestQueue = new RequestQueue(cache, net, 1);
 
         //init vars
         productPrice = findViewById(R.id.product_price);
@@ -155,8 +155,10 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                                 new Response.Listener<Bitmap>() {
                                     @Override
                                     public void onResponse(Bitmap response) {
+                                        Log.d(TAG, "onResponse: got image 0");
                                         bitmaps.add(response);
-                                        pagerAdapter.refresh(bitmaps);
+                                        pagerAdapter.notifyDataSetChanged();
+
                                     }
                                 }, 1024, 1024, null,
                                 new Response.ErrorListener() {
@@ -172,8 +174,9 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                                 new Response.Listener<Bitmap>() {
                                     @Override
                                     public void onResponse(Bitmap response) {
+                                        Log.d(TAG, "onResponse: got image 1");
                                         bitmaps.add(response);
-                                        pagerAdapter.refresh(bitmaps);
+                                        pagerAdapter.notifyDataSetChanged();
                                     }
                                 }, 1024, 1024, null,
                                 new Response.ErrorListener() {
@@ -189,7 +192,8 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Bitmap response) {
                                         bitmaps.add(response);
-                                        pagerAdapter.refresh(bitmaps);
+                                        Log.d(TAG, "onResponse: got image 2");
+                                        pagerAdapter.notifyDataSetChanged();
                                     }
                                 }, 1024, 1024, null,
                                 new Response.ErrorListener() {
