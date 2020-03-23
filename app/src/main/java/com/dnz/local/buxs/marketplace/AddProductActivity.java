@@ -1,4 +1,4 @@
-package com.dnz.local.buxs.MarketPlace;
+package com.dnz.local.buxs.marketplace;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;

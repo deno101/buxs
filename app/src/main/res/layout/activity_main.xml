@@ -124,7 +124,10 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/col1"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                <include layout="@layout/toolbar"/>
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
     </FrameLayout>

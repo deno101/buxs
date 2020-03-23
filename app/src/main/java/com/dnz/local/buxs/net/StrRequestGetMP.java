@@ -8,7 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.dnz.local.buxs.MarketPlace.MarketPlaceActivity;
+import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

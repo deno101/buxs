@@ -1,7 +1,6 @@
-package com.dnz.local.buxs.MarketPlace;
+package com.dnz.local.buxs.marketplace;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.dnz.local.buxs.R;
-
-import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;

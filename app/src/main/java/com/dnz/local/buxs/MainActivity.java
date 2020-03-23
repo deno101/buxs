@@ -1,33 +1,21 @@
 package com.dnz.local.buxs;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dnz.local.buxs.MarketPlace.MarketPlaceActivity;
+import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
-import com.google.android.material.navigation.NavigationView;
 
-import java.net.Authenticator;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.net.CookieStore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new MyDrawerLayout(this).initDrawerLayout();
+        findViewById(R.id.cart_toolbar_container).setVisibility(View.INVISIBLE);
 
         cookieStore = new MyCookieStore(this, "cookieStore");
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);

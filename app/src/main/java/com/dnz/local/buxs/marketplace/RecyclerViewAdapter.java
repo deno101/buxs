@@ -1,4 +1,4 @@
-package com.dnz.local.buxs.MarketPlace;
+package com.dnz.local.buxs.marketplace;
 
 import android.content.Context;
 import android.content.Intent;

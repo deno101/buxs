@@ -1,22 +1,14 @@
-package com.dnz.local.buxs.MarketPlace;
+package com.dnz.local.buxs.marketplace;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,23 +19,17 @@ import com.android.volley.Network;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.Volley;
-import com.dnz.local.buxs.LoginActivity;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.net.MyCookieStore;
-import com.dnz.local.buxs.net.PersistentCookieStore;
 import com.dnz.local.buxs.net.StrRequestGetMP;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
-import com.google.android.material.navigation.NavigationView;
 
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class MarketPlaceActivity extends AppCompatActivity {
