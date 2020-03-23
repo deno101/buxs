@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.utils.Currency;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
 import org.json.JSONException;
@@ -140,9 +141,9 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            productPrice.setText(response.getString("price"));
+                            productPrice.setText(Currency.getShilling(response.getString("price")));
                             productDesc.setText(response.getString("description"));
-                            productBrand.setText(response.getString("brand"));
+                            productBrand.setText("Brand: "+response.getString("brand"));
                             productName.setText(response.getString("name"));
 
                             img1 = response.getString("image_url1");
