@@ -26,6 +26,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.concurrent.AddToCart;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.utils.Currency;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
@@ -54,11 +55,12 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     private ViewPagerAdapter pagerAdapter;
     public TextView productDesc, productPrice, productName, productBrand;
     public String imgurl = "http://165.22.222.126:443/mplace/img/?path=";
-
     private RequestQueue requestQueue;
-
     private String img1, img2, img3;
     private MyCookieStore cookieStore;
+
+    public TextView cartCount;
+    public int productID;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -139,6 +141,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            productID = response.getInt("id");
                             productPrice.setText(Currency.getShilling(response.getString("price")));
                             productDesc.setText(response.getString("description"));
                             productBrand.setText("Brand: "+response.getString("brand"));
@@ -235,4 +238,8 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         }
     }
 
+    public void addToCart(View view){
+        cartCount = findViewById(R.id.cart_amount);
+        new AddToCart().execute(this);
+    }
 }
