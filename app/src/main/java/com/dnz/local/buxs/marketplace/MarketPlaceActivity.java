@@ -22,6 +22,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.concurrent.GetCartCount;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.StrRequestGetMP;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
@@ -58,32 +59,12 @@ public class MarketPlaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_market_place);
 
         new MyDrawerLayout(this).initDrawerLayout();
+        new GetCartCount(this).execute();
 
         cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
-//        // check if a 'username' cookie exists the show username
-//        if (cookieStore.getAuthenticator().isAuthenticated()) {
-//            username.setText(cookieStore.getAuthenticator().getUsername());
-//            username.setVisibility(View.VISIBLE);
-//
-//            user.setImageResource(R.drawable.ic_person_authenticated);
-//            user.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //Todo: show account information
-//
-//                }
-//            });
-//        }else {
-//            user.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    startActivity(new Intent(MarketPlaceActivity.this, LoginActivity.class));
-//                }
-//            });
-//        }
         Window window = this.getWindow();
 
         // set status bar for sdk > lollipop

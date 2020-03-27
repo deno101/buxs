@@ -27,6 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.AddToCart;
+import com.dnz.local.buxs.concurrent.GetCartCount;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.utils.Currency;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
@@ -73,6 +74,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         CookieHandler.setDefault(cookieManager);
 
         new MyDrawerLayout(this).initDrawerLayout();
+        new GetCartCount(this).execute();
 
         selectorViews[0] = findViewById(R.id.item_1);
         selectorViews[1] = findViewById(R.id.item_2);
@@ -240,6 +242,6 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
     public void addToCart(View view){
         cartCount = findViewById(R.id.cart_amount);
-        new AddToCart().execute(this);
+        new AddToCart(this).execute();
     }
 }

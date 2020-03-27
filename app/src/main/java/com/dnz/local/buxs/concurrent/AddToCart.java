@@ -2,8 +2,8 @@ package com.dnz.local.buxs.concurrent;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
-import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.marketplace.MarketPlaceDescActivity;
 
 import org.json.JSONArray;
@@ -17,47 +17,58 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
-public class AddToCart extends AsyncTask<MarketPlaceDescActivity, Integer, Void> {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class AddToCart extends AsyncTask<Void, Integer, Void> {
     private MarketPlaceDescActivity activity;
     private String filename = "cart";
+    private boolean addCartValue;
+
+    public AddToCart(MarketPlaceDescActivity activity) {
+        this.activity = activity;
+    }
 
     @Override
-    protected Void doInBackground(final MarketPlaceDescActivity... context) {
-        final int count = Integer.parseInt((String) context[0].cartCount.getText());
-
-        activity = context[0];
-        writeToFile(context[0].productID, context[0]);
+    protected Void doInBackground(Void... context) {
+        addCartValue = writeToFile(activity.productID, activity);
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        final int count = Integer.parseInt((String) activity.cartCount.getText());
-        super.onPostExecute(aVoid);
-        activity.cartCount.setText(String.valueOf(count + 1));
+        if (addCartValue) {
+            final int count = Integer.parseInt((String) activity.cartCount.getText());
+            activity.cartCount.setText(String.valueOf(count + 1));
+
+        }else{
+            Toast.makeText(activity, "Item already in cart", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void writeToFile(int data, MarketPlaceDescActivity context) {
+    private boolean writeToFile(int data, MarketPlaceDescActivity context) {
         String filedata = readFromFile(context);
-
+        boolean bool = false;
         try {
             JSONObject jsonObject = new JSONObject(filedata);
             JSONArray jsonArray = jsonObject.getJSONArray("cart");
 
-            jsonArray = jsonArray.put(data);
-
-            jsonObject = jsonObject.put("cart", jsonArray);
-            FileOutputStream fout = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            fout.write(jsonObject.toString().getBytes());
+            // Check if value exists in JSONArray
+            if (! ifExists(jsonArray, data)){
+                bool = true;
+                jsonArray = jsonArray.put(data);
+                jsonObject = jsonObject.put("cart", jsonArray);
+                FileOutputStream fout = context.openFileOutput(filename, Context.MODE_PRIVATE);
+                fout.write(jsonObject.toString().getBytes());
+            }
 
         } catch (JSONException | FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return bool;
     }
 
     private String readFromFile(MarketPlaceDescActivity context) {
@@ -86,5 +97,9 @@ public class AddToCart extends AsyncTask<MarketPlaceDescActivity, Integer, Void>
 
         }
         return line;
+    }
+
+    private boolean ifExists(JSONArray jsonArray, int value ){
+        return jsonArray.toString().contains(String.valueOf(value));
     }
 }
