@@ -2,6 +2,7 @@ package com.dnz.local.buxs.marketplace;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
@@ -9,12 +10,16 @@ import android.view.Window;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.ImageRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.net.CustomResponseListener;
+import com.dnz.local.buxs.utils.ProductDataStore;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -24,6 +29,7 @@ import java.net.CookieStore;
 
 public class CartActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,22 @@ public class CartActivity extends AppCompatActivity {
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
 
-        requestQueue = new RequestQueue(cache, net,1);
+        requestQueue = new RequestQueue(cache, net, 1);
         requestQueue.start();
+
+        ProductDataStore dataStore = new ProductDataStore();
+        ImageRequest request = new ImageRequest("",
+                new CustomResponseListener(1, dataStore) {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        this.dataStore.setBitmap(position, response);
+                    }
+                }, 1024, 1024, null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
     }
 }

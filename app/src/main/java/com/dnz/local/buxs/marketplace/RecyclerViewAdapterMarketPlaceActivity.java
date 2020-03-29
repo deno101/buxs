@@ -19,7 +19,7 @@ import java.util.Currency;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter<RecyclerViewAdapterMarketPlaceActivity.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
     private ArrayList<Bitmap> thumbnail;
     private ArrayList<String> itemName;
@@ -27,7 +27,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<Integer> id;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price, ArrayList<Integer> id) {
+    public RecyclerViewAdapterMarketPlaceActivity(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price, ArrayList<Integer> id) {
         this.thumbnail = thumbnail;
         this.itemName = itemName;
         this.price = price;

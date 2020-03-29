@@ -49,7 +49,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public RequestQueue requestQueue;
     public ProgressDialog progressDialog = null;
-    public RecyclerViewAdapter viewAdapter;
+    public RecyclerViewAdapterMarketPlaceActivity viewAdapter;
     private StrRequestGetMP strRequestGetMP = new StrRequestGetMP(this);
     private MyCookieStore cookieStore;
 
@@ -91,7 +91,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
     public void initRecyclerView() {
         recyclerView = findViewById(R.id.recyclerview_market_place);
-        viewAdapter = new RecyclerViewAdapter(this, thumbnail, itemName, price, id);
+        viewAdapter = new RecyclerViewAdapterMarketPlaceActivity(this, thumbnail, itemName, price, id);
         recyclerView.setAdapter(viewAdapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
