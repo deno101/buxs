@@ -5,38 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
-    <LinearLayout
+    <include
         android:id="@+id/navbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/col1"
-        android:orientation="horizontal"
-        android:paddingVertical="8dp">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="goBack"
-            android:src="@drawable/ic_back_white_24dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:text="@string/login_header"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="testNet"
-            android:src="@drawable/ic_more_vert_black_24dp" />
-    </LinearLayout>
+        layout="@layout/toolbar_no_drawer"/>
 
     <LinearLayout
         android:id="@+id/fields"

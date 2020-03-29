@@ -180,7 +180,7 @@
                 app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-                <include layout="@layout/toolbar" />
+                <include layout="@layout/toolbar_for_drawer_l" />
 
             </androidx.appcompat.widget.Toolbar>
 

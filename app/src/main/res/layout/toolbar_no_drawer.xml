@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:orientation="horizontal"
+    android:background="@color/col1">
+
+    <ImageView
+        android:id="@+id/back_toolbar_no_drawer"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_back_white_24dp"
+        android:layout_marginLeft="8dp"/>
+
+    <TextView
+        android:id="@+id/title_toolbar_no_drawer"
+        android:gravity="center|start"
+        android:layout_weight="11"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="Text"
+        android:textSize="32sp"
+        android:textColor="@color/white"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp" />
+
+    <ImageView
+        android:id="@+id/more_toolbar_no_drawer"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_more_vert_black_24dp"/>
+
+</LinearLayout>
