@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.dnz.local.buxs.marketplace.MarketPlaceDescActivity;
+import com.dnz.local.buxs.utils.AsyncIFace;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,49 +19,53 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AddToCart extends AsyncTask<Void, Integer, Void> {
-    private MarketPlaceDescActivity activity;
+public class AddToCart extends AsyncTask<Integer, Void, Boolean> {
+    private AppCompatActivity activity;
     private String filename = "cart";
-    private boolean addCartValue;
+    private ArrayList<Integer> data = new ArrayList<>();
+    private AsyncIFace.IFAddToCart ifAddToCart;
 
-    public AddToCart(MarketPlaceDescActivity activity) {
+
+    public AddToCart(AsyncIFace.IFAddToCart ifAddToCart, AppCompatActivity activity) {
         this.activity = activity;
+        this.ifAddToCart = ifAddToCart;
     }
 
     @Override
-    protected Void doInBackground(Void... context) {
-        addCartValue = writeToFile(activity.productID, activity);
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        if (addCartValue) {
-            final int count = Integer.parseInt((String) activity.cartCount.getText());
-            activity.cartCount.setText(String.valueOf(count + 1));
-
-        }else{
-            Toast.makeText(activity, "Item already in cart", Toast.LENGTH_SHORT).show();
+    protected Boolean doInBackground(Integer... ids) {
+        boolean isAddedToCart = false;
+        for(Integer id : ids) {
+            isAddedToCart = writeToFile(id);
         }
+        return isAddedToCart;
     }
 
-    private boolean writeToFile(int data, MarketPlaceDescActivity context) {
-        String filedata = readFromFile(context);
+    @Override
+    protected void onPostExecute(Boolean isAddedToCart) {
+        ifAddToCart.onPostExecuteThread(isAddedToCart, data);
+    }
+
+    private boolean writeToFile(int data) {
+        String filedata = readFromFile();
         boolean bool = false;
         try {
             JSONObject jsonObject = new JSONObject(filedata);
             JSONArray jsonArray = jsonObject.getJSONArray("cart");
-
             // Check if value exists in JSONArray
-            if (! ifExists(jsonArray, data)){
+            if(! ifExists(jsonArray, data)){
                 bool = true;
                 jsonArray = jsonArray.put(data);
                 jsonObject = jsonObject.put("cart", jsonArray);
-                FileOutputStream fout = context.openFileOutput(filename, Context.MODE_PRIVATE);
+                FileOutputStream fout = activity.openFileOutput(filename, Context.MODE_PRIVATE);
                 fout.write(jsonObject.toString().getBytes());
+            }
+
+            for (int i = 0; i < jsonArray.length(); i++){
+                this.data.add(jsonArray.getInt(i));
             }
 
         } catch (JSONException | FileNotFoundException e) {
@@ -71,10 +76,10 @@ public class AddToCart extends AsyncTask<Void, Integer, Void> {
         return bool;
     }
 
-    private String readFromFile(MarketPlaceDescActivity context) {
+    private String readFromFile() {
         String line = null;
         try {
-            FileInputStream fin = context.openFileInput(filename);
+            FileInputStream fin = activity.openFileInput(filename);
             InputStreamReader reader;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 reader = new InputStreamReader(fin, StandardCharsets.UTF_8);
@@ -91,7 +96,7 @@ public class AddToCart extends AsyncTask<Void, Integer, Void> {
 
             line = builder.toString();
         } catch (FileNotFoundException e) {
-            File file = new File(context.getFilesDir(), filename);
+            File file = new File(activity.getFilesDir(), filename);
             return "{\"cart\":[]}";
         } catch (IOException e) {
 

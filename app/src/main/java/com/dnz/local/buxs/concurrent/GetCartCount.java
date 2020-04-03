@@ -1,9 +1,7 @@
 package com.dnz.local.buxs.concurrent;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
-
-import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.utils.AsyncIFace;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,31 +13,34 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class GetCartCount extends AsyncTask<Void, Void, Void> {
+public class GetCartCount extends AsyncTask<Void, Void, Integer> {
 
+    private static final String TAG = "GetCartCount";
+
+    private AsyncIFace.IFGetCartCount ifGetCartCount;
+    private ArrayList<Integer> data = new ArrayList<>();
     private AppCompatActivity activity;
-    private int count = 0;
 
-    public GetCartCount(AppCompatActivity activity) {
+    public GetCartCount(AsyncIFace.IFGetCartCount ifGetCartCount, AppCompatActivity activity) {
+        this.ifGetCartCount = ifGetCartCount;
         this.activity = activity;
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
-        count = getCartCount();
-        return null;
+    protected Integer doInBackground(Void... voids) {
+        return getCartCount();
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        TextView textView = activity.findViewById(R.id.cart_amount);
-        textView.setText(String.valueOf(count));
+    protected void onPostExecute(Integer result) {
+        ifGetCartCount.onPostExecuteThread(result, data);
     }
 
-    private int getCartCount(){
+    private int getCartCount() {
         String line = null;
         try {
             FileInputStream fin = activity.openFileInput("cart");
@@ -53,7 +54,7 @@ public class GetCartCount extends AsyncTask<Void, Void, Void> {
             StringBuilder builder = new StringBuilder();
             BufferedReader bufferedReader = new BufferedReader(reader);
 
-            while((line = bufferedReader.readLine()) != null){
+            while ((line = bufferedReader.readLine()) != null) {
                 builder.append(line);
             }
 
@@ -68,6 +69,9 @@ public class GetCartCount extends AsyncTask<Void, Void, Void> {
             JSONObject jsonObject = new JSONObject(line);
             JSONArray jsonArray = jsonObject.getJSONArray("cart");
 
+            for (int i =0; i < jsonArray.length(); i++){
+                data.add(jsonArray.getInt(i));
+            }
             return jsonArray.length();
         } catch (JSONException e) {
             e.printStackTrace();

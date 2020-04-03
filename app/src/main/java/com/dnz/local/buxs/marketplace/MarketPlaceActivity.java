@@ -25,15 +25,18 @@ import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.GetCartCount;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.StrRequestGetMP;
+import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
+
+import org.json.JSONArray;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.ArrayList;
 
-public class MarketPlaceActivity extends AppCompatActivity {
+public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount {
 
     ImageView user,dotsVert;
     TextView username;
@@ -45,6 +48,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
     public ArrayList<String> itemName = new ArrayList<>();
     public ArrayList<Integer> price = new ArrayList<>();
     public ArrayList<Integer> id = new ArrayList<>();
+    public ArrayList<Integer> productsInCart;
 
     public RecyclerView recyclerView;
     public RequestQueue requestQueue;
@@ -59,7 +63,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_market_place);
 
         new MyDrawerLayout(this).initDrawerLayout();
-        new GetCartCount(this).execute();
+        new GetCartCount(this,this).execute();
 
         cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
@@ -113,6 +117,14 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
     public void makeToast(String message){
         Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPostExecuteThread(int count, ArrayList<Integer> data) {
+        TextView cartCount = findViewById(R.id.cart_amount);
+        cartCount.setText(String.valueOf(count));
+
+        this.productsInCart = data;
     }
 }
 

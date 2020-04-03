@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -29,6 +30,7 @@ import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.AddToCart;
 import com.dnz.local.buxs.concurrent.GetCartCount;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.Currency;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
@@ -44,9 +46,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MarketPlaceDescActivity extends AppCompatActivity {
+public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount, AsyncIFace.IFAddToCart {
 
     private static final String TAG = "MarketPlaceDescActivity";
+    private ArrayList<Integer> productsInCart;
 
     private ViewPager viewPager;
     public ArrayList<Bitmap> bitmaps = new ArrayList<>();
@@ -59,7 +62,6 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private String img1, img2, img3;
     private MyCookieStore cookieStore;
-
     public TextView cartCount;
     public int productID;
 
@@ -74,7 +76,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         CookieHandler.setDefault(cookieManager);
 
         new MyDrawerLayout(this).initDrawerLayout();
-        new GetCartCount(this).execute();
+        new GetCartCount(this, this).execute();
 
         selectorViews[0] = findViewById(R.id.item_1);
         selectorViews[1] = findViewById(R.id.item_2);
@@ -220,6 +222,29 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
     }
 
+    // To change UI Displaying the items already in cart on toolbar
+    @Override
+    public void onPostExecuteThread(int count, ArrayList<Integer> data) {
+        TextView cartCount = findViewById(R.id.cart_amount);
+        cartCount.setText(String.valueOf(count));
+
+        productsInCart = data;
+    }
+
+    //To change UI after item is added to cart
+    @Override
+    public void onPostExecuteThread(boolean notAlreadyInCart, ArrayList<Integer> productsInCart) {
+        if (notAlreadyInCart){
+            TextView cartCount = findViewById(R.id.cart_amount);
+            int initial = Integer.parseInt((String) cartCount.getText());
+            cartCount.setText(String.valueOf(initial + 1));
+
+            this.productsInCart = productsInCart;
+        }else{
+            Toast.makeText(this, "Item Aready Exists In Cart", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // Timer to handle auto scroll if images
     public class MyTimer extends TimerTask {
 
@@ -242,6 +267,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
     public void addToCart(View view){
         cartCount = findViewById(R.id.cart_amount);
-        new AddToCart(this).execute();
+        new AddToCart(this, this).execute(productID);
     }
+
 }

@@ -1,11 +1,15 @@
 package com.dnz.local.buxs.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.marketplace.CartActivity;
+import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
+import com.dnz.local.buxs.marketplace.MarketPlaceDescActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +29,7 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
 
     public MyDrawerLayout(AppCompatActivity context) {
         this.context = context;
+        this.setToolbarListeners();
     }
 
     public void initDrawerLayout(){
@@ -45,7 +50,6 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
 
         drawerToggle = new ActionBarDrawerToggle(context, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerToggle.syncState();
-        setToolbarListeners();
     }
 
     @Override
@@ -65,7 +69,15 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
         if (v.getId() == R.id.menu_more_vert){
             Toast.makeText(context, "Clicked dots vertical", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(context, "Clicked cart", Toast.LENGTH_SHORT).show();
+            if (context instanceof MarketPlaceDescActivity){
+                MarketPlaceDescActivity placeDescActivity = (MarketPlaceDescActivity) context;
+                Intent i = new Intent(placeDescActivity, CartActivity.class);
+                placeDescActivity.startActivity(i);
+            }else if (context instanceof MarketPlaceActivity){
+                MarketPlaceActivity placeDescActivity = (MarketPlaceActivity) context;
+                Intent i = new Intent(placeDescActivity, CartActivity.class);
+                placeDescActivity.startActivity(i);
+            }
         }
     }
 }
