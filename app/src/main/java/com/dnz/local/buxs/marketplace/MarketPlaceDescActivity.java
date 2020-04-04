@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -241,7 +242,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
 
             this.productsInCart = productsInCart;
         }else{
-            Toast.makeText(this, "Item Aready Exists In Cart", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Item Already Exists In Cart", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -270,4 +271,15 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         new AddToCart(this, this).execute(productID);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new GetCartCount(this,this).execute();
+    }
+
+    public void startCartActivity(){
+        Intent i = new Intent(MarketPlaceDescActivity.this, CartActivity.class);
+        i.putIntegerArrayListExtra("ids", productsInCart);
+        startActivity(i);
+    }
 }

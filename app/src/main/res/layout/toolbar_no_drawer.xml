@@ -17,7 +17,7 @@
     <TextView
         android:id="@+id/title_toolbar_no_drawer"
         android:gravity="center|start"
-        android:layout_weight="11"
+        android:layout_weight="14"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="Text"

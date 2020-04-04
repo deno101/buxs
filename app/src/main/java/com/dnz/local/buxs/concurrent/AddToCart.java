@@ -2,9 +2,7 @@ package com.dnz.local.buxs.concurrent;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
-import com.dnz.local.buxs.marketplace.MarketPlaceDescActivity;
 import com.dnz.local.buxs.utils.AsyncIFace;
 
 import org.json.JSONArray;

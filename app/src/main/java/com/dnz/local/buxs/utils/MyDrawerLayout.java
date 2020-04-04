@@ -70,13 +70,9 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
             Toast.makeText(context, "Clicked dots vertical", Toast.LENGTH_SHORT).show();
         }else{
             if (context instanceof MarketPlaceDescActivity){
-                MarketPlaceDescActivity placeDescActivity = (MarketPlaceDescActivity) context;
-                Intent i = new Intent(placeDescActivity, CartActivity.class);
-                placeDescActivity.startActivity(i);
+                ((MarketPlaceDescActivity) context).startCartActivity();
             }else if (context instanceof MarketPlaceActivity){
-                MarketPlaceActivity placeDescActivity = (MarketPlaceActivity) context;
-                Intent i = new Intent(placeDescActivity, CartActivity.class);
-                placeDescActivity.startActivity(i);
+                ((MarketPlaceActivity) context).startCartActivity();
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -125,6 +126,18 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         cartCount.setText(String.valueOf(count));
 
         this.productsInCart = data;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new GetCartCount(this, this).execute();
+    }
+
+    public void startCartActivity(){
+        Intent i = new Intent(MarketPlaceActivity.this, CartActivity.class);
+        i.putIntegerArrayListExtra("ids", productsInCart);
+        startActivity(i);
     }
 }
 
