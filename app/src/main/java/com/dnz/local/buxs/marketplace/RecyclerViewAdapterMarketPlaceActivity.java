@@ -11,10 +11,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.utils.Currency;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Currency;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,9 +50,7 @@ public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter
         }
         holder.itemName.setText(this.itemName.get(position));
 
-        NumberFormat format = NumberFormat.getCurrencyInstance();
-        format.setCurrency(Currency.getInstance("USD"));
-        holder.price.setText(format.format((double) this.price.get(position)));
+        holder.price.setText(Currency.getShilling(this.price.get(position)));
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override

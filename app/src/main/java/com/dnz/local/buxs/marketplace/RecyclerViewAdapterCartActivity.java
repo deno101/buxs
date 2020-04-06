@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.utils.Currency;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +32,7 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
         // put data to view
         ViewHolder mHolder = (ViewHolder) holder;
         mHolder.productName.setText(cartActivity.productDataStore.getProductName(position));
-        mHolder.productPrice.setText(cartActivity.productDataStore.getProductPrice(position));
+        mHolder.productPrice.setText(Currency.getShilling(cartActivity.productDataStore.getProductPrice(position)));
 
         Bitmap productImage = cartActivity.productDataStore.getProductImage(position);
         if (productImage != null){

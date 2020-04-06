@@ -17,11 +17,12 @@
         android:id="@+id/item_name"
         android:layout_margin="16dp"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_toRightOf="@id/thumbnail_image"
-        android:textSize="24sp"
         android:text="Dummy Text"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:maxLines="2"
+        android:ellipsize="end"/>
 
     <TextView
         android:id="@+id/price"
