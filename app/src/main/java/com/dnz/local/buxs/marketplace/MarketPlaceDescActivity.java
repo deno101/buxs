@@ -139,7 +139,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
     }
 
     private void fetchData(String productId) {
-        String productUrl = URLBuilder.buildURL("mplace/gdesc", "path=" + productId);
+        String productUrl = URLBuilder.buildURL("mplace/gdesc", "pid=" + productId);
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, productUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override

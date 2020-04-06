@@ -125,21 +125,25 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
                                 productDataStore.insertData(name, price, null, this.productPosition);
                                 adapterCartActivity.notifyItemInserted(this.productPosition);
-                                String fullImageUrl = URLBuilder.buildURL("mplace/img/", "path=" + imagePath);
+                                String fullImageUrl = URLBuilder.buildURL("mplace/img", "path=" + imagePath);
 
                                 // Make request associated with the json data
-                                ImageRequest imageRequest = new ImageRequest(fullImageUrl, new CustomImageResponseListener(this.productPosition) {
-                                    @Override
-                                    public void onResponse(Bitmap response) {
-                                        productDataStore.setBitmap(this.productPosition, response);
-                                        adapterCartActivity.notifyItemChanged(this.productPosition);
-                                    }
-                                }, 1024, 1024, null, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.e(TAG, "onErrorResponse: ImageRequest", error);
-                                    }
-                                });
+                                ImageRequest imageRequest = new ImageRequest(fullImageUrl,
+                                        new CustomImageResponseListener(this.productPosition) {
+
+                                            @Override
+                                            public void onResponse(Bitmap response) {
+                                                productDataStore.setBitmap(this.productPosition, response);
+                                                adapterCartActivity.notifyItemChanged(this.productPosition);
+                                            }
+                                        }, 1024, 1024, null,
+                                        new Response.ErrorListener() {
+
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Log.e(TAG, "onErrorResponse: ImageRequest", error);
+                                            }
+                                        });
                                 requestQueue.add(imageRequest);
 
                             } catch (JSONException e) {
