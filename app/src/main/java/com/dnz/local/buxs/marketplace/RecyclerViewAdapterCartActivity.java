@@ -1,5 +1,6 @@
 package com.dnz.local.buxs.marketplace;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +13,35 @@ import com.dnz.local.buxs.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter{
-
+public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<RecyclerViewAdapterCartActivity.ViewHolder>{
     public RecyclerViewAdapterCartActivity() {
+
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_viewholder, parent, false));
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_viewholder, parent,false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // put data to view
+        ViewHolder mHolder = (ViewHolder) holder;
+        mHolder.productName.setText(CartActivity.productDataStore.getProductName(position));
+        mHolder.productPrice.setText(CartActivity.productDataStore.getProductPrice(position));
 
+        Bitmap productImage = CartActivity.productDataStore.getProductImage(position);
+        if (productImage != null){
+            mHolder.productImage.setImageBitmap(productImage);
+            mHolder.progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return CartActivity.productDataStore.length();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

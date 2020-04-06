@@ -11,12 +11,14 @@
         android:id="@+id/navbar"
         layout="@layout/toolbar_no_drawer"/>
 
-    <androidx.cardview.widget.CardView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_cart_activity"
         android:layout_below="@id/navbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </androidx.cardview.widget.CardView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </RelativeLayout>
