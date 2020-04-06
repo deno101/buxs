@@ -31,6 +31,7 @@ import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.AddToCart;
 import com.dnz.local.buxs.concurrent.GetCartCount;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.Currency;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
@@ -56,12 +57,10 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
     public ArrayList<Bitmap> bitmaps = new ArrayList<>();
     public View[] selectorViews = new View[3];
     Map<String, String> stringMap = new HashMap<>();
-    private String url = "http://165.22.222.126:443/mplace/gdesc?pid=";
     private ViewPagerAdapter pagerAdapter;
     public TextView productDesc, productPrice, productName, productBrand;
-    public String imgurl = "http://165.22.222.126:443/mplace/img/?path=";
     private RequestQueue requestQueue;
-    private String img1, img2, img3;
+    private String[] viewPagerImages = new String[3];
     private MyCookieStore cookieStore;
     public TextView cartCount;
     public int productID;
@@ -135,13 +134,13 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         productName = findViewById(R.id.product_name);
 
         requestQueue.start();
-        fetchData();
+        String productId = getIntent().getStringExtra("PRODUCT_ID");
+        fetchData(productId);
     }
 
-    private void fetchData() {
-        String img = getIntent().getStringExtra("PRODUCT_ID");
-        url += img;
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+    private void fetchData(String productId) {
+        String productUrl = URLBuilder.buildURL("mplace/gdesc", "path=" + productId);
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, productUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -149,68 +148,39 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
                             productID = response.getInt("id");
                             productPrice.setText(Currency.getShilling(response.getString("price")));
                             productDesc.setText(response.getString("description"));
-                            productBrand.setText("Brand: "+response.getString("brand"));
+                            productBrand.setText("Brand: " + response.getString("brand"));
                             productName.setText(response.getString("name"));
 
-                            img1 = response.getString("image_url1");
-                            img2 = response.getString("image_url2");
-                            img3 = response.getString("image_url3");
+                            viewPagerImages[0] = response.getString("image_url1");
+                            viewPagerImages[1] = response.getString("image_url2");
+                            viewPagerImages[2] = response.getString("image_url3");
                         } catch (JSONException e) {
                             Log.d(TAG, "JSONexception " + e.getMessage());
                         }
-                        ImageRequest imageRequest = new ImageRequest(imgurl + img1,
-                                new Response.Listener<Bitmap>() {
-                                    @Override
-                                    public void onResponse(Bitmap response) {
-                                        Log.d(TAG, "onResponse: got image 0");
-                                        bitmaps.add(response);
-                                        pagerAdapter.notifyDataSetChanged();
+                        for (String x : viewPagerImages) {
+                            String imgUrl = URLBuilder.buildURL("mplace/img", "path=" + x);
 
-                                    }
-                                }, 1024, 1024, null,
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.d(TAG, "onErrorResponse: "+error.toString());
-                                    }
-                                });
+                            ImageRequest imageRequest1 = new ImageRequest(imgUrl,
+                                    new Response.Listener<Bitmap>() {
 
-                        requestQueue.add(imageRequest);
+                                        @Override
+                                        public void onResponse(Bitmap response) {
+                                            Log.d(TAG, "onResponse: got image 1");
+                                            bitmaps.add(response);
+                                            pagerAdapter.notifyDataSetChanged();
+                                        }
+                                    }, 1024, 1024, null,
+                                    new Response.ErrorListener() {
+                                        @Override
 
-                        ImageRequest imageRequest1 = new ImageRequest(imgurl + img2,
-                                new Response.Listener<Bitmap>() {
-                                    @Override
-                                    public void onResponse(Bitmap response) {
-                                        Log.d(TAG, "onResponse: got image 1");
-                                        bitmaps.add(response);
-                                        pagerAdapter.notifyDataSetChanged();
-                                    }
-                                }, 1024, 1024, null,
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.d(TAG, "onErrorResponse: "+error.getMessage());
-                                    }
-                                });
+                                        public void onErrorResponse(VolleyError error) {
+                                            Log.d(TAG, "onErrorResponse: " + error.getMessage());
+                                        }
+                                    });
 
-                        requestQueue.add(imageRequest1);
-                        ImageRequest imageRequest2 = new ImageRequest(imgurl + img3,
-                                new Response.Listener<Bitmap>() {
-                                    @Override
-                                    public void onResponse(Bitmap response) {
-                                        bitmaps.add(response);
-                                        Log.d(TAG, "onResponse: got image 2");
-                                        pagerAdapter.notifyDataSetChanged();
-                                    }
-                                }, 1024, 1024, null,
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.d(TAG, "onErrorResponse: "+error.getMessage());
-                                    }
-                                });
+                            requestQueue.add(imageRequest1);
+                        }
 
-                        requestQueue.add(imageRequest2);
                     }
                 },
                 new Response.ErrorListener() {
@@ -235,13 +205,13 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
     //To change UI after item is added to cart
     @Override
     public void onPostExecuteThread(boolean notAlreadyInCart, ArrayList<Integer> productsInCart) {
-        if (notAlreadyInCart){
+        if (notAlreadyInCart) {
             TextView cartCount = findViewById(R.id.cart_amount);
             int initial = Integer.parseInt((String) cartCount.getText());
             cartCount.setText(String.valueOf(initial + 1));
 
             this.productsInCart = productsInCart;
-        }else{
+        } else {
             Toast.makeText(this, "Item Already Exists In Cart", Toast.LENGTH_SHORT).show();
         }
     }
@@ -266,7 +236,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         }
     }
 
-    public void addToCart(View view){
+    public void addToCart(View view) {
         cartCount = findViewById(R.id.cart_amount);
         new AddToCart(this, this).execute(productID);
     }
@@ -274,10 +244,10 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
     @Override
     protected void onStart() {
         super.onStart();
-        new GetCartCount(this,this).execute();
+        new GetCartCount(this, this).execute();
     }
 
-    public void startCartActivity(){
+    public void startCartActivity() {
         Intent i = new Intent(MarketPlaceDescActivity.this, CartActivity.class);
         i.putIntegerArrayListExtra("ids", productsInCart);
         startActivity(i);

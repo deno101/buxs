@@ -21,22 +21,23 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.net.URLBuilder;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
 
     private final String LOG_TAG = SignupActivity.class.getSimpleName();
-    public final String URL = "http://165.22.222.126:443/signup/";
+    public final String URL = URLBuilder.buildURL("signup");
 
     private EditText usernameField, firstNameField, lastNameField, emailField,
-                passwordField;
+                        passwordField;
     private RequestQueue requestQueue;
-    private MyCookieStore cookieStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class SignupActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 

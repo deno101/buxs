@@ -1,7 +1,7 @@
 package com.dnz.local.buxs.net;
 
 public class URLBuilder {
-    private static final String IP = "165.22.222.126";
+    private static final String IP = "188.166.54.33";
     private static final String PORT = "443";
 
     public static String buildURL(String path) {

@@ -2,7 +2,6 @@ package com.dnz.local.buxs;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.net.URLBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +40,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private final String LOG_TAG = LoginActivity.class.getSimpleName();
     private static final String TAG = "LoginActivity";
-    private final String URL = "http://165.22.222.126:443/login/";
+    private final String URL = URLBuilder.buildURL("login");
     private EditText usernameField;
     private EditText passwordField;
-    private static MyCookieStore cookieStore;
     public LoginActivity context;
 
     //    request Queue for http connections
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
-        cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 

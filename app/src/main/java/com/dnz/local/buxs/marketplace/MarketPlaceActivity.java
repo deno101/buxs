@@ -26,6 +26,7 @@ import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.GetCartCount;
 import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.StrRequestGetMP;
+import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
@@ -35,16 +36,14 @@ import org.json.JSONArray;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.util.ArrayList;
 
 public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount {
 
-    ImageView user,dotsVert;
-    TextView username;
-
     public static final String TAG = "MarketPlaceActivity";
-    public final String URL = "http://165.22.222.126:443/mplace/gdata/";
-    public String imgurl = "http://165.22.222.126:443/mplace/img/?path=";
+    public final String URL = URLBuilder.buildURL("mplace/gdata");
+    public String imgurl = URLBuilder.buildURL("mplace/img", "path=");
     public ArrayList<Bitmap> thumbnail = new ArrayList<>();
     public ArrayList<String> itemName = new ArrayList<>();
     public ArrayList<Integer> price = new ArrayList<>();
@@ -56,7 +55,6 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
     public ProgressDialog progressDialog = null;
     public RecyclerViewAdapterMarketPlaceActivity viewAdapter;
     private StrRequestGetMP strRequestGetMP = new StrRequestGetMP(this);
-    private MyCookieStore cookieStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,7 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         new MyDrawerLayout(this).initDrawerLayout();
         new GetCartCount(this,this).execute();
 
-        cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
