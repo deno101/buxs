@@ -9,11 +9,11 @@
 
     <androidx.cardview.widget.CardView
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view_cart"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        android:elevation="?attr/cardElevation"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout

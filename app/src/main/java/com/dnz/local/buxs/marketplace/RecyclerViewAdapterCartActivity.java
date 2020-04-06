@@ -14,8 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<RecyclerViewAdapterCartActivity.ViewHolder>{
-    public RecyclerViewAdapterCartActivity() {
-
+    private CartActivity cartActivity;
+    public RecyclerViewAdapterCartActivity(CartActivity cartActivity) {
+        this.cartActivity = cartActivity;
     }
 
     @NonNull
@@ -29,10 +30,10 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // put data to view
         ViewHolder mHolder = (ViewHolder) holder;
-        mHolder.productName.setText(CartActivity.productDataStore.getProductName(position));
-        mHolder.productPrice.setText(CartActivity.productDataStore.getProductPrice(position));
+        mHolder.productName.setText(cartActivity.productDataStore.getProductName(position));
+        mHolder.productPrice.setText(cartActivity.productDataStore.getProductPrice(position));
 
-        Bitmap productImage = CartActivity.productDataStore.getProductImage(position);
+        Bitmap productImage = cartActivity.productDataStore.getProductImage(position);
         if (productImage != null){
             mHolder.productImage.setImageBitmap(productImage);
             mHolder.progressBar.setVisibility(View.GONE);
@@ -41,7 +42,7 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
 
     @Override
     public int getItemCount() {
-        return CartActivity.productDataStore.length();
+        return cartActivity.productDataStore.length();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

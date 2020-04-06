@@ -24,8 +24,8 @@ public class ProductDataStore {
         return productName.get(position);
     }
 
-    public int getProductPrice(int position){
-        return productPrice.get(position);
+    public String getProductPrice(int position){
+        return String.valueOf(productPrice.get(position));
     }
 
     public Bitmap getProductImage(int position){

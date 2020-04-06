@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.marketplace;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,8 +42,8 @@ import java.util.ArrayList;
 public class CartActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "CartActivity";
     private RequestQueue requestQueue;
-    public static ProductDataStore productDataStore = new ProductDataStore();
-    private RecyclerViewAdapterCartActivity adapterCartActivity = new RecyclerViewAdapterCartActivity();
+    public ProductDataStore productDataStore = new ProductDataStore();
+    private RecyclerViewAdapterCartActivity adapterCartActivity = new RecyclerViewAdapterCartActivity(this);
     private final String activityTitle = "Cart";
 
     private String URL = URLBuilder.buildURL("mplace/cart");
@@ -50,7 +51,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cart_viewholder);
+        setContentView(R.layout.activity_cart);
 
         CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
@@ -68,14 +69,15 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
         requestQueue = new RequestQueue(cache, net, 1);
         requestQueue.start();
+        CardView cardView = new CardView(this);
 
-//        ((TextView) findViewById(R.id.title_toolbar_no_drawer)).setText(activityTitle);
-//
-//        setListeners();
-//        initRecyclerView();
-//
-//        ArrayList<Integer> productIDs = getIntent().getIntegerArrayListExtra("ids");
-//        makeNetworkRequests(productIDs);
+        ((TextView) findViewById(R.id.title_toolbar_no_drawer)).setText(activityTitle);
+
+        setListeners();
+        initRecyclerView();
+
+        ArrayList<Integer> productIDs = getIntent().getIntegerArrayListExtra("ids");
+        makeNetworkRequests(productIDs);
     }
 
     // Execute when item is clicked
@@ -157,7 +159,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    // Clases  to help in sorting response data
+    // Classes  to help in sorting response data
     private abstract class CustomJSONResponseListener implements Response.Listener<JSONObject> {
         public int productPosition;
 
