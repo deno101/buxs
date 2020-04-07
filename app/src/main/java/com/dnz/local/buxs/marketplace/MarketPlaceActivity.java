@@ -5,56 +5,56 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.PictureDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.GetCartCount;
-import com.dnz.local.buxs.net.MyCookieStore;
-import com.dnz.local.buxs.net.StrRequestGetMP;
 import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
+import com.dnz.local.buxs.utils.ProductDataStore;
 
-
-import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount {
 
     public static final String TAG = "MarketPlaceActivity";
-    public final String URL = URLBuilder.buildURL("mplace/gdata");
-    public String imgurl = URLBuilder.buildURL("mplace/img", "path=");
-    public ArrayList<Bitmap> thumbnail = new ArrayList<>();
-    public ArrayList<String> itemName = new ArrayList<>();
-    public ArrayList<Integer> price = new ArrayList<>();
-    public ArrayList<Integer> id = new ArrayList<>();
+
+    public ProductDataStore dataStore = new ProductDataStore();
     public ArrayList<Integer> productsInCart;
 
     public RecyclerView recyclerView;
     public RequestQueue requestQueue;
-    public ProgressDialog progressDialog = null;
     public RecyclerViewAdapterMarketPlaceActivity viewAdapter;
-    private StrRequestGetMP strRequestGetMP = new StrRequestGetMP(this);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         setContentView(R.layout.activity_market_place);
 
         new MyDrawerLayout(this).initDrawerLayout();
-        new GetCartCount(this,this).execute();
+        new GetCartCount(this, this).execute();
 
         CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
@@ -78,23 +78,22 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
 
-        requestQueue = new RequestQueue(cache, net,1);
+        requestQueue = new RequestQueue(cache, net, 5);
         requestQueue.start();
-
-        // Create progress bar showing content loading
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Fetching Data");
-        progressDialog.show();
 
         // Initialize recycler view with adapter/Layout
         initRecyclerView();
-        // Make http request with length 10
-        strRequestGetMP.makeRequest(10);
+
+        // Make http request
+        String getDataURL = URLBuilder.buildURL("mplace/gdata");
+        CustomJSONResponseListener jsonResponseListener = new CustomJSONResponseListener();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getDataURL, null, jsonResponseListener, jsonResponseListener);
+        requestQueue.add(jsonObjectRequest);
     }
 
     public void initRecyclerView() {
         recyclerView = findViewById(R.id.recyclerview_market_place);
-        viewAdapter = new RecyclerViewAdapterMarketPlaceActivity(this, thumbnail, itemName, price, id);
+        viewAdapter = new RecyclerViewAdapterMarketPlaceActivity(this);
         recyclerView.setAdapter(viewAdapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -107,15 +106,15 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
                 super.onScrollStateChanged(recyclerView, newState);
 
                 // check if reach end of recycler view
-                if(!recyclerView.canScrollVertically(1)){
-                    strRequestGetMP.makeRequest(10);
+                if (!recyclerView.canScrollVertically(1)) {
+
                 }
             }
         });
     }
 
-    public void makeToast(String message){
-        Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+    public void makeToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -132,10 +131,78 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         new GetCartCount(this, this).execute();
     }
 
-    public void startCartActivity(){
+    public void startCartActivity() {
         Intent i = new Intent(MarketPlaceActivity.this, CartActivity.class);
         i.putIntegerArrayListExtra("ids", productsInCart);
         startActivity(i);
+    }
+
+
+    // Private classes to handle Response.listener and Response.errorListener
+    private class CustomJSONResponseListener implements Response.Listener<JSONObject>, Response.ErrorListener {
+
+        @Override
+        public void onResponse(JSONObject response) {
+            Iterator<String> stringIterator = response.keys();
+
+            // Target position in recycler view
+            int position = dataStore.length();
+            while (stringIterator.hasNext()) {
+
+                try {
+                    JSONObject product = response.getJSONObject(stringIterator.next());
+
+                    int id = product.getInt("id");
+                    int price = Integer.parseInt(product.getString("price"));
+                    String name = product.getString("name");
+                    String imageUrl = product.getString("image_url1");
+
+                    dataStore.insertData(id, name, price, null, position);
+                    viewAdapter.notifyItemInserted(position);
+
+                    String finalImageUrl = URLBuilder.buildURL("mplace/img", "path=" + imageUrl);
+                    // Make the http request for the image
+                    CustomImageResponseListener responseListener = new CustomImageResponseListener(position);
+                    ImageRequest imageRequest = new ImageRequest(finalImageUrl, responseListener,
+                            1024, 1024, null, responseListener);
+
+                    requestQueue.add(imageRequest);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                position += 1;
+            }
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO: Show red Error message just below the toolbar
+
+        }
+    }
+
+    private class CustomImageResponseListener implements Response.ErrorListener, Response.Listener<Bitmap> {
+
+        private int imagePosition;
+
+        public CustomImageResponseListener(int imagePosition) {
+            this.imagePosition = imagePosition;
+        }
+
+        @Override
+        public void onResponse(Bitmap response) {
+            dataStore.setBitmap(imagePosition, response);
+            viewAdapter.notifyItemChanged(imagePosition);
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image_load_error);
+            dataStore.setBitmap(this.imagePosition, bitmap);
+            viewAdapter.notifyItemChanged(imagePosition);
+        }
     }
 }
 

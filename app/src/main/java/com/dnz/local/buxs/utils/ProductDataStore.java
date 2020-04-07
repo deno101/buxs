@@ -1,38 +1,54 @@
 package com.dnz.local.buxs.utils;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDataStore {
-    private ArrayList<String> productName = new ArrayList<>();
-    private ArrayList<Integer> productPrice = new ArrayList<>();
-    private ArrayList<Bitmap> productImage = new ArrayList<>();
+    private static final String TAG = "ProductDataStore";
 
-    public synchronized void insertData(String productName, int productPrice, Bitmap productImage, int position){
+    private Map<Integer, String> productName = new HashMap<>();
+    private Map<Integer, Integer> productPrice = new HashMap<>();
+    private Map<Integer, Bitmap> productImage = new HashMap<>();
+    private Map<Integer, Integer> productID = new HashMap<>();
+
+    public synchronized void insertData(String productName, int productPrice, Bitmap productImage, int position) {
+        this.insertData(-1, productName, productPrice, productImage, position);
+    }
+
+    public synchronized void insertData(int id, String productName, int productPrice, Bitmap productImage, int position) {
         // On insert bitmap is always null
-        this.productImage.add(position, productImage);
-        this.productName.add(position, productName);
-        this.productPrice.add(position, productPrice);
+        this.productImage.put(position, productImage);
+        this.productName.put(position, productName);
+        this.productPrice.put(position, productPrice);
+
+        this.productID.put(position, id);
     }
 
-    public synchronized void setBitmap(int position, Bitmap bitmap){
-        this.productImage.add(position, bitmap);
+    public synchronized void setBitmap(int position, Bitmap bitmap) {
+        this.productImage.put(position, bitmap);
     }
 
-    public String getProductName(int position){
+    public String getProductName(int position) {
         return productName.get(position);
     }
 
-    public String getProductPrice(int position){
+    public String getProductPrice(int position) {
         return String.valueOf(productPrice.get(position));
     }
 
-    public Bitmap getProductImage(int position){
+    public Bitmap getProductImage(int position) {
         return productImage.get(position);
     }
 
-    public int length(){
+    public int length() {
         return productName.size();
+    }
+
+    public int getProductID(int position){
+        return this.productID.get(position);
     }
 }

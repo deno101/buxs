@@ -3,6 +3,7 @@ package com.dnz.local.buxs.marketplace;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter<RecyclerViewAdapterMarketPlaceActivity.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<Bitmap> thumbnail;
-    private ArrayList<String> itemName;
-    private ArrayList<Integer> price;
-    private ArrayList<Integer> id;
-    private Context context;
+    private MarketPlaceActivity marketPlaceActivity;
 
-    public RecyclerViewAdapterMarketPlaceActivity(Context context, ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price, ArrayList<Integer> id) {
-        this.thumbnail = thumbnail;
-        this.itemName = itemName;
-        this.price = price;
-        this.context = context;
-        this.id = id;
+    public RecyclerViewAdapterMarketPlaceActivity(MarketPlaceActivity marketPlaceActivity) {
+      this.marketPlaceActivity = marketPlaceActivity;
     }
 
     @NonNull
@@ -43,29 +36,23 @@ public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        try {
-            holder.thumbnailImage.setImageBitmap(this.thumbnail.get(position));
-        } catch (Exception e) {
-            holder.thumbnailImage.setImageBitmap(null);
-        }
-        holder.itemName.setText(this.itemName.get(position));
-
-        holder.price.setText(Currency.getShilling(this.price.get(position)));
+        holder.thumbnailImage.setImageBitmap(marketPlaceActivity.dataStore.getProductImage(position));
+        holder.price.setText(Currency.getShilling(marketPlaceActivity.dataStore.getProductPrice(position)));
+        holder.itemName.setText(marketPlaceActivity.dataStore.getProductName(position));
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MarketPlaceDescActivity.class);
-                intent.putExtra("PRODUCT_ID",String.valueOf(id.get(position)));
-                context.startActivity(intent);
+                Intent intent = new Intent(marketPlaceActivity, MarketPlaceDescActivity.class);
+                intent.putExtra("PRODUCT_ID",String.valueOf(marketPlaceActivity.dataStore.getProductID(position)));
+                marketPlaceActivity.startActivity(intent);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        int maxSize = Math.max(thumbnail.size(), Math.max(price.size(), itemName.size()));
-        return maxSize;
+        return marketPlaceActivity.dataStore.length();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -82,13 +69,5 @@ public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter
             itemName = itemView.findViewById(R.id.item_name);
             container = itemView.findViewById(R.id.container);
         }
-    }
-
-    public void refresh(ArrayList<Bitmap> thumbnail, ArrayList<String> itemName, ArrayList<Integer> price) {
-        this.thumbnail = thumbnail;
-        this.itemName = itemName;
-        this.price = price;
-
-        this.notifyDataSetChanged();
     }
 }
