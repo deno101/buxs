@@ -78,7 +78,7 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
 
-        requestQueue = new RequestQueue(cache, net, 5);
+        requestQueue = new RequestQueue(cache, net);
         requestQueue.start();
 
         // Initialize recycler view with adapter/Layout

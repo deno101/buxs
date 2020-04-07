@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="130dp"
     android:background="@drawable/recycler_marketplace_bg">
 
-    <ImageView
-        android:id="@+id/thumbnail_image"
+    <RelativeLayout
+        android:id="@+id/marketplace_image_container"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_margin="16dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:id="@+id/thumbnail_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerInParent="true"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar_marketplace_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/item_name"
-        android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/thumbnail_image"
-        android:text="Dummy Text"
-        android:textColor="@android:color/black"
+        android:layout_margin="16dp"
+        android:layout_toRightOf="@id/marketplace_image_container"
+        android:ellipsize="end"
         android:maxLines="2"
-        android:ellipsize="end"/>
+        android:text="Dummy Text"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/price"
@@ -30,16 +42,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/item_name"
         android:layout_alignParentLeft="false"
-        android:layout_toRightOf="@id/thumbnail_image"
-        android:text="Dummy price"
-        android:layout_marginLeft="16dp"/>
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/marketplace_image_container"
+        android:text="Dummy price" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/grey"
         android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="8dp"/>
+        android:layout_marginHorizontal="8dp"
+        android:background="@color/grey" />
 
 
 </RelativeLayout>

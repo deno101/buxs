@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,7 +37,11 @@ public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.thumbnailImage.setImageBitmap(marketPlaceActivity.dataStore.getProductImage(position));
+        Bitmap bitmap = marketPlaceActivity.dataStore.getProductImage(position);
+        if (bitmap != null){
+            holder.progressBar.setVisibility(View.GONE);
+        }
+        holder.thumbnailImage.setImageBitmap(bitmap);
         holder.price.setText(Currency.getShilling(marketPlaceActivity.dataStore.getProductPrice(position)));
         holder.itemName.setText(marketPlaceActivity.dataStore.getProductName(position));
 
@@ -60,6 +65,7 @@ public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter
         ImageView thumbnailImage;
         TextView price, itemName;
         RelativeLayout container;
+        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +74,7 @@ public class RecyclerViewAdapterMarketPlaceActivity extends RecyclerView.Adapter
             price = itemView.findViewById(R.id.price);
             itemName = itemView.findViewById(R.id.item_name);
             container = itemView.findViewById(R.id.container);
+            progressBar = itemView.findViewById(R.id.progress_bar_marketplace_recycler_view);
         }
     }
 }
