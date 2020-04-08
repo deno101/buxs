@@ -30,7 +30,6 @@ import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.AddToCart;
 import com.dnz.local.buxs.concurrent.GetCartCount;
-import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.Currency;
@@ -42,9 +41,8 @@ import org.json.JSONObject;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,12 +54,10 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
     private ViewPager viewPager;
     public ArrayList<Bitmap> bitmaps = new ArrayList<>();
     public View[] selectorViews = new View[3];
-    Map<String, String> stringMap = new HashMap<>();
     private ViewPagerAdapter pagerAdapter;
     public TextView productDesc, productPrice, productName, productBrand;
     private RequestQueue requestQueue;
     private String[] viewPagerImages = new String[3];
-    private MyCookieStore cookieStore;
     public TextView cartCount;
     public int productID;
 
@@ -71,7 +67,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_place_desc);
 
-        cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
@@ -148,7 +144,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
                             productID = response.getInt("id");
                             productPrice.setText(Currency.getShilling(response.getString("price")));
                             productDesc.setText(response.getString("description"));
-                            productBrand.setText("Brand: " + response.getString("brand"));
+                            productBrand.setText(String.format("Brand : %s",response.getString("brand")));
                             productName.setText(response.getString("name"));
 
                             viewPagerImages[0] = response.getString("image_url1");

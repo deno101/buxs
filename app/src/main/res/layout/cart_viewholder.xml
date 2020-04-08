@@ -11,10 +11,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view_cart"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        app:cardCornerRadius="5dp">
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -66,7 +67,7 @@
                 android:layout_height="1dp"
                 android:background="@color/grey"
                 android:layout_below="@id/image_container"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginHorizontal="8dp"
                 />
 
@@ -80,9 +81,12 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/container_remove_cart_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
                     <ImageView
                         android:layout_width="30dp"
@@ -103,52 +107,63 @@
 
                 <View
                     android:layout_width="1dp"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_height="match_parent"
                     android:background="@color/grey"
-                    android:layout_marginVertical="2dp"/>
+                    android:layout_marginVertical="4dp"/>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_margin="8dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:text="-"
-                        android:textSize="16dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:background="@drawable/bg_for_cart_count_and_circular_btn_orange"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textSize="16sp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:textColor="@android:color/black"/>
+                        <TextView
+                            android:id="@+id/reduce_item_total"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:text="-"
+                            android:textSize="16dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:background="@drawable/bg_for_cart_count_and_circular_btn_light_orange"/>
 
-                    <TextView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:text="+"
-                        android:textSize="16sp"
-                        android:layout_margin="8dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:background="@drawable/bg_for_cart_count_and_circular_btn_orange"/>
+                        <TextView
+                            android:id="@+id/number_of_items_in_cart"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textSize="16sp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:textColor="@android:color/black"/>
+
+                        <TextView
+                            android:id="@+id/add_to_item_total"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:text="+"
+                            android:textSize="16sp"
+                            android:layout_margin="8dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:background="@drawable/bg_for_cart_count_and_circular_btn_orange"/>
+
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
-
             </LinearLayout>
         </RelativeLayout>
 

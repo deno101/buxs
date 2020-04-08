@@ -35,13 +35,16 @@
             android:id="@+id/cart_amount"
             android:elevation="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="4dp"
             android:text="0"
             android:layout_alignParentRight="true"
-            android:textColor="@color/col2"
-            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
             android:textStyle="bold"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_for_cart_amount_toolbar"
+            android:gravity="center"/>
     </RelativeLayout>
 
     <ImageView

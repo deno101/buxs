@@ -12,6 +12,7 @@ import android.graphics.drawable.PictureDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,6 +122,12 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
     public void onPostExecuteThread(int count, ArrayList<Integer> data) {
         TextView cartCount = findViewById(R.id.cart_amount);
         cartCount.setText(String.valueOf(count));
+
+        if (count == 0){
+            cartCount.setVisibility(View.GONE);
+        }else{
+            cartCount.setVisibility(View.VISIBLE);
+        }
 
         this.productsInCart = data;
     }

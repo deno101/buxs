@@ -51,4 +51,11 @@ public class ProductDataStore {
     public int getProductID(int position){
         return this.productID.get(position);
     }
+
+    public synchronized void removeItem(int position){
+        productID.remove(position);
+        productName.remove(position);
+        productImage.remove(position);
+        productPrice.remove(position);
+    }
 }

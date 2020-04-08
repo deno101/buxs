@@ -1,21 +1,26 @@
 package com.dnz.local.buxs.marketplace;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.concurrent.RemoveFromCart;
 import com.dnz.local.buxs.utils.Currency;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<RecyclerViewAdapterCartActivity.ViewHolder>{
+public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<RecyclerViewAdapterCartActivity.ViewHolder> {
+    private static final String TAG = "RecyclerViewAdapterCart";
     private CartActivity cartActivity;
+
     public RecyclerViewAdapterCartActivity(CartActivity cartActivity) {
         this.cartActivity = cartActivity;
     }
@@ -23,22 +28,27 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_viewholder, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_viewholder, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // put data to view
-        ViewHolder mHolder = (ViewHolder) holder;
-        mHolder.productName.setText(cartActivity.productDataStore.getProductName(position));
-        mHolder.productPrice.setText(Currency.getShilling(cartActivity.productDataStore.getProductPrice(position)));
+        holder.productName.setText(cartActivity.productDataStore.getProductName(position));
+        holder.productPrice.setText(Currency.getShilling(cartActivity.productDataStore.getProductPrice(position)));
 
         Bitmap productImage = cartActivity.productDataStore.getProductImage(position);
-        if (productImage != null){
-            mHolder.productImage.setImageBitmap(productImage);
-            mHolder.progressBar.setVisibility(View.GONE);
+        if (productImage != null) {
+            holder.productImage.setImageBitmap(productImage);
+            holder.progressBar.setVisibility(View.GONE);
         }
+
+        // Set Listeners for click action
+        ClickListener clickListener = new ClickListener(holder, position);
+        holder.addTotal.setOnClickListener(clickListener);
+        holder.reduceTotal.setOnClickListener(clickListener);
+        holder.containerRemoveItem.setOnClickListener(clickListener);
     }
 
     @Override
@@ -46,10 +56,11 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
         return cartActivity.productDataStore.length();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView productImage;
-        public TextView productPrice, productName;
+        public TextView productPrice, productName, addTotal, reduceTotal, itemCount;
         public ProgressBar progressBar;
+        public LinearLayout containerRemoveItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,6 +69,50 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
             productPrice = itemView.findViewById(R.id.product_price_cart);
             productName = itemView.findViewById(R.id.product_name_cart);
             progressBar = itemView.findViewById(R.id.progresbar_img_cart);
+            addTotal = itemView.findViewById(R.id.add_to_item_total);
+            reduceTotal = itemView.findViewById(R.id.reduce_item_total);
+            itemCount = itemView.findViewById(R.id.number_of_items_in_cart);
+            containerRemoveItem = itemView.findViewById(R.id.container_remove_cart_item);
+
+
+        }
+    }
+
+    // Listener for click action
+    private class ClickListener implements View.OnClickListener {
+        private ViewHolder holder;
+        private int position;
+
+        private ClickListener(ViewHolder holder, int position) {
+            this.holder = holder;
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View v) {
+            int count;
+            switch (v.getId()) {
+                case R.id.add_to_item_total:
+                    count = Integer.parseInt((String) holder.itemCount.getText());
+                    holder.itemCount.setText(String.valueOf(count + 1));
+                    holder.reduceTotal.setBackgroundResource(R.drawable.bg_for_cart_count_and_circular_btn_orange);
+                    break;
+                case R.id.reduce_item_total:
+                    count = Integer.parseInt((String) holder.itemCount.getText());
+                    if (count != 1) {
+                        holder.itemCount.setText(String.valueOf(count - 1));
+                        count -= 1;
+                    }
+                    if (count == 1){
+                        holder.reduceTotal.setBackgroundResource(R.drawable.bg_for_cart_count_and_circular_btn_light_orange);
+                    }
+                    break;
+                case R.id.container_remove_cart_item:
+                    // TODO: remove item from adapter, start thread to remove item from cart file
+                    cartActivity.productDataStore.removeItem(position);
+                    notifyItemRemoved(position);
+                    new RemoveFromCart().execute(position, cartActivity);
+            }
         }
     }
 }

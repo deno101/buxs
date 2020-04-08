@@ -3,7 +3,7 @@ package com.dnz.local.buxs.utils;
 import java.text.DecimalFormat;
 
 public class Currency {
-    private final static DecimalFormat KSHFORMAT = new DecimalFormat("KSH #,###.##");
+    private final static DecimalFormat KSHFORMAT = new DecimalFormat("KSH #,###.00");
     public static String getShilling(int price){
         return KSHFORMAT.format(price);
     }
