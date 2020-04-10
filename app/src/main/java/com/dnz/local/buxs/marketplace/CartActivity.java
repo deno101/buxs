@@ -1,16 +1,22 @@
 package com.dnz.local.buxs.marketplace;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +47,14 @@ import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "CartActivity";
+
     private RequestQueue requestQueue;
     public ProductDataStore productDataStore = new ProductDataStore();
     private RecyclerViewAdapterCartActivity adapterCartActivity = new RecyclerViewAdapterCartActivity(this);
     private final String activityTitle = "Cart";
+
+    private boolean canEnlargeTotal = false;
+    private boolean canShrinkTotal = true;
 
     private String URL = URLBuilder.buildURL("mplace/cart");
 
@@ -101,8 +111,16 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerview_cart_activity);
+        RelativeLayout animationView = findViewById(R.id.cart_total_container);
 
         recyclerView.setAdapter(adapterCartActivity);
+        Log.d(TAG, "initRecyclerView: " + animationView.getMeasuredHeightAndState());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            bindRecyclerViewWithScrollListener_API_GT_23(recyclerView, animationView);
+        } else {
+            bindRecyclerViewWithScrollListener_API_LT_23(recyclerView, animationView);
+        }
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
@@ -162,6 +180,91 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void bindRecyclerViewWithScrollListener_API_GT_23(final RecyclerView recyclerView, final RelativeLayout animationView) {
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                int dy = scrollY - oldScrollY;
+                if (dy > 0) {
+                    // move upwards
+                    if (canShrinkTotal) {
+                        animationView.animate().translationY(-animationView.getHeight()).setDuration(300).alpha(0.0f).setListener(
+                                new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        animationView.setVisibility(View.GONE);
+                                        recyclerView.setElevation(10);
+                                        animationView.setElevation(0);
+                                    }
+
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        super.onAnimationStart(animation);
+                                        recyclerView.setPadding(0, 0, 0, 0);
+                                    }
+                                }
+                        );
+                        canShrinkTotal = false;
+                        canEnlargeTotal = true;
+                        Log.d(TAG, "onScrollChange: shrinking height" + animationView.getMeasuredHeight());
+                    }
+                } else {
+                    // move Downwards
+                    if (canEnlargeTotal) {
+                        animationView.animate().translationY(0).setDuration(300).alpha(1.0f).setListener(
+                                new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        super.onAnimationStart(animation);
+                                        animationView.setVisibility(View.VISIBLE);
+                                        recyclerView.setElevation(0);
+                                        animationView.setElevation(10);
+                                        recyclerView.setPadding(0, animationView.getHeight(), 0, 0);
+                                    }
+
+                                }
+
+                        );
+                        canShrinkTotal = true;
+                        canEnlargeTotal = false;
+                        Log.d(TAG, "onScrollChange: enlarging");
+                    }
+                }
+            }
+        });
+    }
+
+    private void bindRecyclerViewWithScrollListener_API_LT_23(RecyclerView recyclerView, final RelativeLayout animationView) {
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    // move upwards
+                    if (canShrinkTotal) {
+                        animationView.setAnimation(AnimationUtils.loadAnimation(CartActivity.this, R.anim.shrink_animation));
+                        canShrinkTotal = false;
+                        canEnlargeTotal = true;
+
+                    }
+                } else {
+                    // move downwards
+                    if (canEnlargeTotal) {
+                        animationView.setAnimation(AnimationUtils.loadAnimation(CartActivity.this, R.anim.enlarge_animation));
+                        canShrinkTotal = true;
+                        canEnlargeTotal = false;
+                    }
+                }
+            }
+
+        });
+
+    }
 
     // Classes  to help in sorting response data
     private abstract class CustomJSONResponseListener implements Response.Listener<JSONObject> {
