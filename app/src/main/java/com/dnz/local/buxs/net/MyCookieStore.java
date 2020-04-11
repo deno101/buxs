@@ -53,7 +53,6 @@ public class MyCookieStore implements CookieStore {
     private void saveCookieToFile() {
         ArrayList<HttpCookie> httpCookies = new ArrayList<>(store.getCookies());
         Map<Integer, HttpCookie> dictionary = new HashMap<>();
-        Gson gson = new Gson();
         for (int i = 0; i < httpCookies.size(); i++) {
             dictionary.put(i, httpCookies.get(i));
         }
@@ -65,10 +64,12 @@ public class MyCookieStore implements CookieStore {
             fout = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             fout.write(data.getBytes());
         } catch (FileNotFoundException e) {
+            Log.e(TAG, "saveCookieToFile: Fatal error writing to file FileNotFound");
             File file = new File(context.getFilesDir(), fileName);
+            createNewFile(file);
             saveCookieToFile();
         } catch (IOException e) {
-            Log.e(TAG, "saveCookieToFile: Fatal error writing to file", e);
+            Log.e(TAG, "saveCookieToFile: Fatal error writing to file IOException");
         }
     }
 
@@ -96,12 +97,12 @@ public class MyCookieStore implements CookieStore {
             Log.e(TAG, "getCookiesFromFile: "+ line);
 
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "getCookiesFromFile: ", e);
+            Log.e(TAG, "getCookiesFromFile: FileNotFoundException");
             File file = new File(context.getFilesDir(), fileName);
             createNewFile(file);
             return;
         } catch (IOException e){
-            Log.e(TAG, "getCookiesFromFile: ", e);
+            Log.e(TAG, "getCookiesFromFile: IOException");
             return;
         }
 
