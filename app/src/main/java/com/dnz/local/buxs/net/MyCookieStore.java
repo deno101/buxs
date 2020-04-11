@@ -98,6 +98,7 @@ public class MyCookieStore implements CookieStore {
         } catch (FileNotFoundException e) {
             Log.e(TAG, "getCookiesFromFile: ", e);
             File file = new File(context.getFilesDir(), fileName);
+            createNewFile(file);
             return;
         } catch (IOException e){
             Log.e(TAG, "getCookiesFromFile: ", e);
@@ -167,5 +168,29 @@ public class MyCookieStore implements CookieStore {
     @Override
     public boolean removeAll() {
         return store.removeAll();
+    }
+
+    private void createNewFile(File file){
+        boolean isCreated;
+        try {
+            isCreated = file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (isCreated){
+            try {
+                FileOutputStream fout = new FileOutputStream(file);
+                String emptyJson = new JSONObject("{}").toString();
+
+                fout.write(emptyJson.getBytes());
+                Log.d(TAG, "createNewFile: file created");
+            } catch (FileNotFoundException | JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

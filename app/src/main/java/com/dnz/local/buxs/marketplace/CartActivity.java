@@ -43,13 +43,16 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 public class CartActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "CartActivity";
 
     private RequestQueue requestQueue;
-    public ProductDataStore productDataStore = new ProductDataStore();
+    public CartProductDataStore productDataStore = new CartProductDataStore();
     private RecyclerViewAdapterCartActivity adapterCartActivity = new RecyclerViewAdapterCartActivity(this);
     private final String activityTitle = "Cart";
 
@@ -117,8 +120,6 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "initRecyclerView: " + animationView.getMeasuredHeightAndState());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             bindRecyclerViewWithScrollListener_API_GT_23(recyclerView, animationView);
-        } else {
-            bindRecyclerViewWithScrollListener_API_LT_23(recyclerView, animationView);
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -191,39 +192,26 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                 if (dy > 0) {
                     // move upwards
                     if (canShrinkTotal) {
-                        animationView.animate().translationY(-animationView.getHeight()).setDuration(300).alpha(0.0f).setListener(
+                        animationView.animate().translationY(animationView.getHeight()).setDuration(400).alpha(0.0f).setListener(
                                 new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
                                         super.onAnimationEnd(animation);
-                                        animationView.setVisibility(View.GONE);
-                                        recyclerView.setElevation(10);
-                                        animationView.setElevation(0);
                                     }
 
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-                                        super.onAnimationStart(animation);
-                                        recyclerView.setPadding(0, 0, 0, 0);
-                                    }
                                 }
                         );
                         canShrinkTotal = false;
                         canEnlargeTotal = true;
-                        Log.d(TAG, "onScrollChange: shrinking height" + animationView.getMeasuredHeight());
                     }
                 } else {
                     // move Downwards
                     if (canEnlargeTotal) {
-                        animationView.animate().translationY(0).setDuration(300).alpha(1.0f).setListener(
+                        animationView.animate().translationY(0).setDuration(400).alpha(1.0f).setListener(
                                 new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
                                         super.onAnimationStart(animation);
-                                        animationView.setVisibility(View.VISIBLE);
-                                        recyclerView.setElevation(0);
-                                        animationView.setElevation(10);
-                                        recyclerView.setPadding(0, animationView.getHeight(), 0, 0);
                                     }
 
                                 }
@@ -236,34 +224,6 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-    }
-
-    private void bindRecyclerViewWithScrollListener_API_LT_23(RecyclerView recyclerView, final RelativeLayout animationView) {
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    // move upwards
-                    if (canShrinkTotal) {
-                        animationView.setAnimation(AnimationUtils.loadAnimation(CartActivity.this, R.anim.shrink_animation));
-                        canShrinkTotal = false;
-                        canEnlargeTotal = true;
-
-                    }
-                } else {
-                    // move downwards
-                    if (canEnlargeTotal) {
-                        animationView.setAnimation(AnimationUtils.loadAnimation(CartActivity.this, R.anim.enlarge_animation));
-                        canShrinkTotal = true;
-                        canEnlargeTotal = false;
-                    }
-                }
-            }
-
-        });
-
     }
 
     // Classes  to help in sorting response data
@@ -281,5 +241,35 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         private CustomImageResponseListener(int productPosition) {
             this.productPosition = productPosition;
         }
+    }
+
+    protected class CartProductDataStore extends ProductDataStore {
+        private Map<Integer, Integer> productCount = new HashMap<>();
+
+        @Override
+        public synchronized void insertData(int id, String productName, int productPrice, Bitmap productImage, int position) {
+            super.insertData(id, productName, productPrice, productImage, position);
+            productCount.put(position, 1);
+        }
+
+        @Override
+        public synchronized void removeItem(int position) {
+            super.removeItem(position);
+            productCount.remove(position);
+        }
+
+        public synchronized void setProductCount(int position, int count) {
+            productCount.put(position, count);
+        }
+
+        public synchronized int getPrice() {
+            Set<Integer> keys = productCount.keySet();
+            int totalPrice = 0;
+            for (Integer integer : keys) {
+                totalPrice += (super.getProductPriceInt(integer) * productCount.get(integer));
+            }
+            return totalPrice;
+        }
+
     }
 }

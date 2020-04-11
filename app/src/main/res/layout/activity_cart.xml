@@ -14,7 +14,6 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_cart_activity"
-        android:paddingTop="?attr/actionBarSize"
         android:layout_below="@id/navbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,13 +25,14 @@
         android:id="@+id/cart_total_container"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_below="@id/navbar">
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1.5dp"
             android:background="@color/grey"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentTop="true"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                     android:id="@+id/cart_total"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:text="Ksh 10,023.45"
+                    android:text="Ksh 0.00"
                     android:layout_gravity="end|center"
                     android:textSize="16sp"
                     android:textStyle="bold"/>

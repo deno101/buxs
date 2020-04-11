@@ -49,11 +49,21 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
         holder.addTotal.setOnClickListener(clickListener);
         holder.reduceTotal.setOnClickListener(clickListener);
         holder.containerRemoveItem.setOnClickListener(clickListener);
+
+        int newTotal = cartActivity.productDataStore.getPrice();
+        ((TextView) cartActivity.findViewById(R.id.cart_total)).setText(Currency.getShilling(newTotal));
     }
 
     @Override
     public int getItemCount() {
         return cartActivity.productDataStore.length();
+    }
+
+    public void notifyItemDeleted(int position) {
+        notifyItemRemoved(position);
+
+        int newTotal = cartActivity.productDataStore.getPrice();
+        ((TextView) cartActivity.findViewById(R.id.cart_total)).setText(Currency.getShilling(newTotal));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,28 +100,37 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
 
         @Override
         public void onClick(View v) {
-            int count;
+            int count = -1;
             switch (v.getId()) {
                 case R.id.add_to_item_total:
-                    count = Integer.parseInt((String) holder.itemCount.getText());
-                    holder.itemCount.setText(String.valueOf(count + 1));
+                    count = Integer.parseInt((String) holder.itemCount.getText()) + 1;
+                    holder.itemCount.setText(String.valueOf(count));
                     holder.reduceTotal.setBackgroundResource(R.drawable.bg_for_cart_count_and_circular_btn_orange);
+
+                    cartActivity.productDataStore.setProductCount(position, count);
                     break;
                 case R.id.reduce_item_total:
                     count = Integer.parseInt((String) holder.itemCount.getText());
                     if (count != 1) {
-                        holder.itemCount.setText(String.valueOf(count - 1));
                         count -= 1;
+                        holder.itemCount.setText(String.valueOf(count));
+                        if (count == 1) {
+                            holder.reduceTotal.setBackgroundResource(R.drawable.bg_for_cart_count_and_circular_btn_light_orange);
+                        }
+                        cartActivity.productDataStore.setProductCount(position, count);
                     }
-                    if (count == 1){
-                        holder.reduceTotal.setBackgroundResource(R.drawable.bg_for_cart_count_and_circular_btn_light_orange);
-                    }
+
                     break;
                 case R.id.container_remove_cart_item:
-                    // TODO: remove item from adapter, start thread to remove item from cart file
+
                     cartActivity.productDataStore.removeItem(position);
-                    notifyItemRemoved(position);
+                    notifyItemDeleted(position);
                     new RemoveFromCart().execute(position, cartActivity);
+            }
+
+            if (count != -1) {
+                int newTotal = cartActivity.productDataStore.getPrice();
+                ((TextView) cartActivity.findViewById(R.id.cart_total)).setText(Currency.getShilling(newTotal));
             }
         }
     }

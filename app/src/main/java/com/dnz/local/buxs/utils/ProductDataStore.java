@@ -3,6 +3,7 @@ package com.dnz.local.buxs.utils;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,10 @@ public class ProductDataStore {
 
     public String getProductPrice(int position) {
         return String.valueOf(productPrice.get(position));
+    }
+
+    public  int getProductPriceInt(int postion){
+        return productPrice.get(postion);
     }
 
     public Bitmap getProductImage(int position) {
