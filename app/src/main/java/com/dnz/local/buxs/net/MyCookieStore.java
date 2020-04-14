@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.net;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
@@ -21,6 +22,9 @@ import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,26 +32,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.RequiresApi;
 
 public class MyCookieStore implements CookieStore {
 
     private static final String TAG = "MyCookieStore";
     private Context context;
     private CookieStore store;
-    private String fileName;
     private Authenticator authenticator;
 
     public Authenticator getAuthenticator() {
         return this.authenticator;
     }
 
-    public MyCookieStore(Context context, String fileName) {
+    private final String fileName = "cookieStore";
+
+    public MyCookieStore(Context context) {
         this.context = context;
-        this.fileName = fileName;
 
         store = new CookieManager().getCookieStore();
-        getCookiesFromFile();
+        new ReadTask().execute();
     }
 
     private void saveCookieToFile() {
@@ -62,7 +65,22 @@ public class MyCookieStore implements CookieStore {
         FileOutputStream fout;
         try {
             fout = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            FileChannel channel = fout.getChannel();
+            FileLock lock;
+            // Acquire file lock
+            try {
+                while ((lock = channel.tryLock()) == null) {
+                    Thread.currentThread();
+                    Thread.sleep(200);
+                }
+            }catch (OverlappingFileLockException e){
+                saveCookieToFile();
+                return;
+            }
             fout.write(data.getBytes());
+
+            // Release lock
+            lock.release();
         } catch (FileNotFoundException e) {
             Log.e(TAG, "saveCookieToFile: Fatal error writing to file FileNotFound");
             File file = new File(context.getFilesDir(), fileName);
@@ -70,18 +88,29 @@ public class MyCookieStore implements CookieStore {
             saveCookieToFile();
         } catch (IOException e) {
             Log.e(TAG, "saveCookieToFile: Fatal error writing to file IOException");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private void getCookiesFromFile() {
-        String line;
+        String line = null;
         try {
             FileInputStream fin = context.openFileInput(fileName);
+            FileChannel channel = fin.getChannel();
+            FileLock lock;
 
+            // Try Acquiring file lock in loop
+            while ((lock = channel.tryLock(0, Long.MAX_VALUE, true)) == null) {
+                Thread.currentThread();
+                Thread.sleep(200);
+            }
+
+            Log.d(TAG, "getCookiesFromFile: lock acquired");
             InputStreamReader reader = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 reader = new InputStreamReader(fin, StandardCharsets.UTF_8);
-            }else {
+            } else {
                 reader = new InputStreamReader(fin, "UTF-8");
             }
             StringBuilder builder = new StringBuilder();
@@ -93,25 +122,30 @@ public class MyCookieStore implements CookieStore {
                 line = reader1.readLine();
             }
 
+            // release file lock
+            lock.release();
+
             line = builder.toString();
-            Log.e(TAG, "getCookiesFromFile: "+ line);
+            Log.e(TAG, "getCookiesFromFile: " + line);
 
         } catch (FileNotFoundException e) {
             Log.e(TAG, "getCookiesFromFile: FileNotFoundException");
             File file = new File(context.getFilesDir(), fileName);
             createNewFile(file);
             return;
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "getCookiesFromFile: IOException");
             return;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         // convert the string to Json then to Cookies
         try {
-            JSONObject jsonObject =  new JSONObject(line);
+            JSONObject jsonObject = new JSONObject(line);
             Iterator<String> stringIterator = jsonObject.keys();
 
-            while (stringIterator.hasNext()){
+            while (stringIterator.hasNext()) {
                 JSONObject cookieInfo = jsonObject.getJSONObject(stringIterator.next());
                 String name = cookieInfo.getString("name");
                 String value = cookieInfo.getString("value");
@@ -129,10 +163,13 @@ public class MyCookieStore implements CookieStore {
                 cookie.setSecure(cookieInfo.getBoolean("secure"));
                 cookie.setDiscard(cookieInfo.getBoolean("toDiscard"));
                 cookie.setVersion(cookieInfo.getInt("version"));
-                add(null, cookie);
+
+                // Add cookie to cookie store
+                add(URLBuilder.getBackendURI(), cookie);
             }
         } catch (JSONException e) {
             Log.e(TAG, "getCookiesFromFile: ", e);
+            createNewFile(new File(context.getFilesDir(), fileName));
         }
 
     }
@@ -140,10 +177,11 @@ public class MyCookieStore implements CookieStore {
     @Override
     public void add(URI uri, HttpCookie cookie) {
         store.add(URI.create(cookie.getDomain()), cookie);
-        if (cookie.getName().equals("username")){
+        if (cookie.getName().equals("username")) {
             authenticator = new Authenticator(cookie.getValue());
         }
-        saveCookieToFile();
+        new WriteToFile().execute();
+        Log.d(TAG, "add: " + new Gson().toJson(cookie));
     }
 
     @Override
@@ -171,7 +209,8 @@ public class MyCookieStore implements CookieStore {
         return store.removeAll();
     }
 
-    private void createNewFile(File file){
+    private void createNewFile(File file) {
+
         boolean isCreated;
         try {
             isCreated = file.createNewFile();
@@ -180,18 +219,46 @@ public class MyCookieStore implements CookieStore {
             return;
         }
 
-        if (isCreated){
+        if (isCreated) {
             try {
                 FileOutputStream fout = new FileOutputStream(file);
+                FileChannel channel = fout.getChannel();
+                FileLock fileLock;
+
+                while ((fileLock = channel.tryLock()) == null) {
+                    Thread.currentThread();
+                    Thread.sleep(200);
+                }
                 String emptyJson = new JSONObject("{}").toString();
 
                 fout.write(emptyJson.getBytes());
+                fileLock.release();
                 Log.d(TAG, "createNewFile: file created");
             } catch (FileNotFoundException | JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    private class ReadTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            MyCookieStore.this.getCookiesFromFile();
+            return null;
+        }
+    }
+
+    private class WriteToFile extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            MyCookieStore.this.saveCookieToFile();
+            return null;
         }
     }
 }

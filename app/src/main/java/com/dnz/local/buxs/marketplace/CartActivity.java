@@ -32,7 +32,9 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.concurrent.WriteToCart;
 import com.dnz.local.buxs.net.URLBuilder;
+import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.ProductDataStore;
 
 import org.json.JSONException;
@@ -58,6 +60,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean canEnlargeTotal = false;
     private boolean canShrinkTotal = true;
+    private ArrayList<Integer> productIDs;
 
     private String URL = URLBuilder.buildURL("mplace/cart");
 
@@ -82,14 +85,16 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
         requestQueue = new RequestQueue(cache, net, 1);
         requestQueue.start();
-        CardView cardView = new CardView(this);
 
         ((TextView) findViewById(R.id.title_toolbar_no_drawer)).setText(activityTitle);
 
         setListeners();
         initRecyclerView();
 
-        ArrayList<Integer> productIDs = getIntent().getIntegerArrayListExtra("ids");
+        Object temp = MyCache.getFromCache("cart-data-arraylist");
+        if (temp instanceof ArrayList) {
+         productIDs = (ArrayList<Integer>) temp;
+        }
         makeNetworkRequests(productIDs);
     }
 
@@ -138,11 +143,12 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
+                                int id = response.getInt("id");
                                 String name = response.getString("name");
                                 int price = Integer.parseInt(response.getString("price"));
                                 String imagePath = response.getString("image_url1");
 
-                                productDataStore.insertData(name, price, null, this.productPosition);
+                                productDataStore.insertData(id, name, price, null, this.productPosition);
                                 adapterCartActivity.notifyItemInserted(this.productPosition);
                                 String fullImageUrl = URLBuilder.buildURL("mplace/img", "path=" + imagePath);
 
@@ -181,6 +187,10 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    public void removeFromCart(int position) {
+        productIDs.remove(position);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void bindRecyclerViewWithScrollListener_API_GT_23(final RecyclerView recyclerView, final RelativeLayout animationView) {
@@ -253,22 +263,34 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        public synchronized void removeItem(int position) {
+        public void removeItem(int position) {
+            removeDataFromCart(position);
             super.removeItem(position);
             productCount.remove(position);
         }
 
-        public synchronized void setProductCount(int position, int count) {
+        public void setProductCount(int position, int count) {
             productCount.put(position, count);
         }
 
-        public synchronized int getPrice() {
+        public int getPrice() {
             Set<Integer> keys = productCount.keySet();
             int totalPrice = 0;
             for (Integer integer : keys) {
                 totalPrice += (super.getProductPriceInt(integer) * productCount.get(integer));
             }
             return totalPrice;
+        }
+
+        private void removeDataFromCart(int position){
+            int value = getProductID(position);
+            Object rawData = MyCache.getFromCache("cart-data-arraylist");
+
+            ArrayList<Integer> cartData = (ArrayList<Integer>) rawData;
+            cartData.remove(position);
+
+            MyCache.writeToCache("cart-data-arraylist", cartData);
+            MyCache.saveData("cart-data-arraylist", new WriteToCart(CartActivity.this));
         }
 
     }

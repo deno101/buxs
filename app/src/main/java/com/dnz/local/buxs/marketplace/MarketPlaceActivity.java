@@ -8,10 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.PictureDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -29,9 +27,10 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
-import com.dnz.local.buxs.concurrent.GetCartCount;
+import com.dnz.local.buxs.concurrent.GetCart;
 import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.AsyncIFace;
+import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 import com.dnz.local.buxs.utils.ProductDataStore;
 
@@ -45,12 +44,11 @@ import java.net.CookieStore;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount {
+public class MarketPlaceActivity extends AppCompatActivity {
 
     public static final String TAG = "MarketPlaceActivity";
 
     public ProductDataStore dataStore = new ProductDataStore();
-    public ArrayList<Integer> productsInCart;
 
     public RecyclerView recyclerView;
     public RequestQueue requestQueue;
@@ -63,7 +61,6 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         setContentView(R.layout.activity_market_place);
 
         new MyDrawerLayout(this).initDrawerLayout();
-        new GetCartCount(this, this).execute();
 
         CookieStore cookieStore = MainActivity.getCookieStore();
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
@@ -84,12 +81,14 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
 
         // Initialize recycler view with adapter/Layout
         initRecyclerView();
+        initCartIcon();
 
         // Make http request
         String getDataURL = URLBuilder.buildURL("mplace/gdata");
         CustomJSONResponseListener jsonResponseListener = new CustomJSONResponseListener();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getDataURL, null, jsonResponseListener, jsonResponseListener);
         requestQueue.add(jsonObjectRequest);
+
     }
 
     public void initRecyclerView() {
@@ -118,8 +117,17 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onPostExecuteThread(int count, ArrayList<Integer> data) {
+
+    public void initCartIcon() {
+        Object data = MyCache.getFromCache("cart-data-arraylist");
+        ArrayList<Integer> cartData;
+        if (data != null){
+            cartData =  (ArrayList<Integer>) data;
+        }else{
+            throw new IllegalStateException("Invalid Key for cache");
+        }
+        int count = cartData.size();
+
         TextView cartCount = findViewById(R.id.cart_amount);
         cartCount.setText(String.valueOf(count));
 
@@ -129,18 +137,17 @@ public class MarketPlaceActivity extends AppCompatActivity implements AsyncIFace
             cartCount.setVisibility(View.VISIBLE);
         }
 
-        this.productsInCart = data;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        new GetCartCount(this, this).execute();
+        // Todo: Remap cart-count from cache
+
     }
 
     public void startCartActivity() {
         Intent i = new Intent(MarketPlaceActivity.this, CartActivity.class);
-        i.putIntegerArrayListExtra("ids", productsInCart);
         startActivity(i);
     }
 

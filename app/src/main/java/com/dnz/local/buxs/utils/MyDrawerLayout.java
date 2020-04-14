@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.dnz.local.buxs.LoginActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.marketplace.CartActivity;
 import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
@@ -19,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener {
+public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private AppCompatActivity context;
 
     private DrawerLayout drawerLayout;
@@ -32,7 +33,7 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
         this.setToolbarListeners();
     }
 
-    public void initDrawerLayout(){
+    public void initDrawerLayout() {
         toolbar = context.findViewById(R.id.toolbar);
         drawerLayout = context.findViewById(R.id.drawer_layout);
 
@@ -50,6 +51,8 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
 
         drawerToggle = new ActionBarDrawerToggle(context, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerToggle.syncState();
+
+        navigationView.getHeaderView(0).findViewById(R.id.login_button_drawer_layout).setOnClickListener(this);
     }
 
     @Override
@@ -58,7 +61,7 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
         return false;
     }
 
-    private void setToolbarListeners(){
+    private void setToolbarListeners() {
         context.findViewById(R.id.cart_toolbar_container).setOnClickListener(this);
         context.findViewById(R.id.cart_toolbar_image).setOnClickListener(this);
         context.findViewById(R.id.menu_more_vert).setOnClickListener(this);
@@ -66,14 +69,21 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.menu_more_vert){
-            Toast.makeText(context, "Clicked dots vertical", Toast.LENGTH_SHORT).show();
-        }else{
-            if (context instanceof MarketPlaceDescActivity){
-                ((MarketPlaceDescActivity) context).startCartActivity();
-            }else if (context instanceof MarketPlaceActivity){
-                ((MarketPlaceActivity) context).startCartActivity();
-            }
+        switch (v.getId()) {
+            case R.id.menu_more_vert:
+                Toast.makeText(context, "Clicked dots vertical", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.login_button_drawer_layout:
+                context.startActivity(new Intent(context, LoginActivity.class));
+                break;
+
+            default:
+                if (context instanceof MarketPlaceDescActivity) {
+                    ((MarketPlaceDescActivity) context).startCartActivity();
+                } else if (context instanceof MarketPlaceActivity) {
+                    ((MarketPlaceActivity) context).startCartActivity();
+                }
         }
     }
 }

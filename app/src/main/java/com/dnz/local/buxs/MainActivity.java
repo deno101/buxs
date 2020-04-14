@@ -9,15 +9,19 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.dnz.local.buxs.concurrent.GetCart;
 import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
 import com.dnz.local.buxs.net.MyCookieStore;
+import com.dnz.local.buxs.utils.AsyncIFace;
+import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static MyCookieStore cookieStore;
@@ -33,44 +37,17 @@ public class MainActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
+        // Init app Cache
+        MyCache.startCache();
+
+        new GetCart(this, this).execute();
         new MyDrawerLayout(this).initDrawerLayout();
         findViewById(R.id.cart_toolbar_container).setVisibility(View.INVISIBLE);
 
-        cookieStore = new MyCookieStore(this, "cookieStore");
+        cookieStore = new MyCookieStore(this);
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
-
-//        // check if a 'username' cookie exists the show username
-//        if (cookieStore.getAuthenticator().isAuthenticated()) {
-//            username.setText(cookieStore.getAuthenticator().getUsername());
-//            username.setVisibility(View.VISIBLE);
-//
-//            user.setImageResource(R.drawable.ic_person_authenticated);
-//            user.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //Todo: show account information
-//
-//                }
-//            });
-//        }else {
-//            user.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-//                }
-//            });
-//        }
-//
-//
-//        dotsVert.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // TODO: SHOW A HELPER MENU
-//                showToast("Clicked dots-vert menu");
-//            }
-//        });
     }
 
     private void showToast(String message) {
@@ -90,4 +67,8 @@ public class MainActivity extends AppCompatActivity {
         return cookieStore;
     }
 
+    @Override
+    public void onPostExecuteThread(ArrayList<Integer> data) {
+        MyCache.writeToCache("cart-data-arraylist", data);
+    }
 }

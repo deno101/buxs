@@ -28,11 +28,12 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
-import com.dnz.local.buxs.concurrent.AddToCart;
-import com.dnz.local.buxs.concurrent.GetCartCount;
+import com.dnz.local.buxs.concurrent.WriteToCart;
+import com.dnz.local.buxs.concurrent.GetCart;
 import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.Currency;
+import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
 import org.json.JSONException;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount, AsyncIFace.IFAddToCart {
+public class MarketPlaceDescActivity extends AppCompatActivity {
 
     private static final String TAG = "MarketPlaceDescActivity";
     private ArrayList<Integer> productsInCart;
@@ -72,7 +73,6 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         CookieHandler.setDefault(cookieManager);
 
         new MyDrawerLayout(this).initDrawerLayout();
-        new GetCartCount(this, this).execute();
 
         selectorViews[0] = findViewById(R.id.item_1);
         selectorViews[1] = findViewById(R.id.item_2);
@@ -132,6 +132,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         requestQueue.start();
         String productId = getIntent().getStringExtra("PRODUCT_ID");
         fetchData(productId);
+        initCartIcon();
     }
 
     private void fetchData(String productId) {
@@ -144,7 +145,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
                             productID = response.getInt("id");
                             productPrice.setText(Currency.getShilling(response.getString("price")));
                             productDesc.setText(response.getString("description"));
-                            productBrand.setText(String.format("Brand : %s",response.getString("brand")));
+                            productBrand.setText(String.format("Brand : %s", response.getString("brand")));
                             productName.setText(response.getString("name"));
 
                             viewPagerImages[0] = response.getString("image_url1");
@@ -190,26 +191,53 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
     }
 
     // To change UI Displaying the items already in cart on toolbar
-    @Override
-    public void onPostExecuteThread(int count, ArrayList<Integer> data) {
+    public void initCartIcon() {
+        Object data = MyCache.getFromCache("cart-data-arraylist");
+        ArrayList<Integer> cartData;
+        if (data instanceof ArrayList) {
+            cartData = (ArrayList<Integer>) data;
+        } else {
+            throw new IllegalStateException("Invalid Key for cache");
+        }
+        int count = cartData.size();
+
         TextView cartCount = findViewById(R.id.cart_amount);
         cartCount.setText(String.valueOf(count));
 
-        productsInCart = data;
+        if (count == 0) {
+            cartCount.setVisibility(View.GONE);
+        } else {
+            cartCount.setVisibility(View.VISIBLE);
+        }
+
     }
 
     //To change UI after item is added to cart
-    @Override
-    public void onPostExecuteThread(boolean notAlreadyInCart, ArrayList<Integer> productsInCart) {
-        if (notAlreadyInCart) {
-            TextView cartCount = findViewById(R.id.cart_amount);
-            int initial = Integer.parseInt((String) cartCount.getText());
-            cartCount.setText(String.valueOf(initial + 1));
+    public void addToCart(View view) {
+        Object data = MyCache.getFromCache("cart-data-arraylist");
+        ArrayList<Integer> cartData;
+        TextView cartCount = findViewById(R.id.cart_amount);
 
-            this.productsInCart = productsInCart;
+        if (data instanceof ArrayList) {
+            cartData = (ArrayList<Integer>) data;
         } else {
-            Toast.makeText(this, "Item Already Exists In Cart", Toast.LENGTH_SHORT).show();
+            throw new IllegalStateException("Invalid Key for cache");
         }
+
+
+        if (!cartData.contains(productID)) {
+            cartData.add(productID);
+        }
+
+        int count = cartData.size();
+        cartCount.setText(String.valueOf(count));
+        if (count <= 0) {
+            cartCount.setVisibility(View.INVISIBLE);
+        }
+
+        MyCache.writeToCache("cart-data-arraylist", cartData);
+        MyCache.saveData("cart-data-arraylist", new WriteToCart(this));
+
     }
 
     // Timer to handle auto scroll if images
@@ -232,20 +260,15 @@ public class MarketPlaceDescActivity extends AppCompatActivity implements AsyncI
         }
     }
 
-    public void addToCart(View view) {
-        cartCount = findViewById(R.id.cart_amount);
-        new AddToCart(this, this).execute(productID);
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        new GetCartCount(this, this).execute();
+        // Todo: refresh cartIcon
     }
 
     public void startCartActivity() {
         Intent i = new Intent(MarketPlaceDescActivity.this, CartActivity.class);
-        i.putIntegerArrayListExtra("ids", productsInCart);
         startActivity(i);
     }
 }

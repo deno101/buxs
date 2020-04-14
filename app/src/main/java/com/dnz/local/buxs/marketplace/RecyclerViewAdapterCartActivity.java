@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
-import com.dnz.local.buxs.concurrent.RemoveFromCart;
 import com.dnz.local.buxs.utils.Currency;
 
 import androidx.annotation.NonNull;
@@ -125,7 +124,7 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
 
                     cartActivity.productDataStore.removeItem(position);
                     notifyItemDeleted(position);
-                    new RemoveFromCart().execute(position, cartActivity);
+                    cartActivity.removeFromCart(position);
             }
 
             if (count != -1) {

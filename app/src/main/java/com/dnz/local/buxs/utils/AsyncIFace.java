@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class AsyncIFace {
     public interface IFGetCartCount{
-        void onPostExecuteThread(int count, ArrayList<Integer> data);
+        void onPostExecuteThread(ArrayList<Integer> data);
     }
 
 

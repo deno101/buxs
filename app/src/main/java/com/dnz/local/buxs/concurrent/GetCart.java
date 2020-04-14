@@ -1,6 +1,7 @@
 package com.dnz.local.buxs.concurrent;
 
 import android.os.AsyncTask;
+
 import com.dnz.local.buxs.utils.AsyncIFace;
 
 import org.json.JSONArray;
@@ -12,12 +13,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class GetCartCount extends AsyncTask<Void, Void, Integer> {
+public class GetCart extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "GetCartCount";
 
@@ -25,25 +28,34 @@ public class GetCartCount extends AsyncTask<Void, Void, Integer> {
     private ArrayList<Integer> data = new ArrayList<>();
     private AppCompatActivity activity;
 
-    public GetCartCount(AsyncIFace.IFGetCartCount ifGetCartCount, AppCompatActivity activity) {
+    public GetCart(AsyncIFace.IFGetCartCount ifGetCartCount, AppCompatActivity activity) {
         this.ifGetCartCount = ifGetCartCount;
         this.activity = activity;
     }
 
     @Override
-    protected Integer doInBackground(Void... voids) {
-        return getCartCount();
+    protected Void doInBackground(Void... voids) {
+        getCartCount();
+        return null;
     }
 
     @Override
-    protected void onPostExecute(Integer result) {
-        ifGetCartCount.onPostExecuteThread(result, data);
+    protected void onPostExecute(Void avoid) {
+        ifGetCartCount.onPostExecuteThread(data);
     }
 
-    private int getCartCount() {
+    private void getCartCount() {
         String line = null;
         try {
             FileInputStream fin = activity.openFileInput("cart");
+            FileChannel fileChannel = fin.getChannel();
+            FileLock lock;
+
+            while ((lock = fileChannel.tryLock(0, Long.MAX_VALUE, true)) == null) {
+                Thread.currentThread();
+                Thread.sleep(200);
+            }
+
             InputStreamReader reader;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 reader = new InputStreamReader(fin, StandardCharsets.UTF_8);
@@ -58,10 +70,13 @@ public class GetCartCount extends AsyncTask<Void, Void, Integer> {
                 builder.append(line);
             }
 
+            lock.release();
             line = builder.toString();
         } catch (FileNotFoundException e) {
-            return 0;
+            e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -69,13 +84,11 @@ public class GetCartCount extends AsyncTask<Void, Void, Integer> {
             JSONObject jsonObject = new JSONObject(line);
             JSONArray jsonArray = jsonObject.getJSONArray("cart");
 
-            for (int i =0; i < jsonArray.length(); i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 data.add(jsonArray.getInt(i));
             }
-            return jsonArray.length();
-        } catch (JSONException e) {
+        } catch (JSONException |NullPointerException e) {
             e.printStackTrace();
         }
-        return 0;
     }
 }
