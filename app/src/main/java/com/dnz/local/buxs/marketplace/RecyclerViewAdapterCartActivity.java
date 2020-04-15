@@ -124,7 +124,6 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
 
                     cartActivity.productDataStore.removeItem(position);
                     notifyItemDeleted(position);
-                    cartActivity.removeFromCart(position);
             }
 
             if (count != -1) {

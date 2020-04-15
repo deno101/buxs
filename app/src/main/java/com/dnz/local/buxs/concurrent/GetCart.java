@@ -3,6 +3,7 @@ package com.dnz.local.buxs.concurrent;
 import android.os.AsyncTask;
 
 import com.dnz.local.buxs.utils.AsyncIFace;
+import com.dnz.local.buxs.utils.FileUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,7 @@ public class GetCart extends AsyncTask<Void, Void, Void> {
     private AsyncIFace.IFGetCartCount ifGetCartCount;
     private ArrayList<Integer> data = new ArrayList<>();
     private AppCompatActivity activity;
+    private final String fileName = "cart";
 
     public GetCart(AsyncIFace.IFGetCartCount ifGetCartCount, AppCompatActivity activity) {
         this.ifGetCartCount = ifGetCartCount;
@@ -47,7 +49,7 @@ public class GetCart extends AsyncTask<Void, Void, Void> {
     private void getCartCount() {
         String line = null;
         try {
-            FileInputStream fin = activity.openFileInput("cart");
+            FileInputStream fin = activity.openFileInput(fileName);
             FileChannel fileChannel = fin.getChannel();
             FileLock lock;
 
@@ -73,7 +75,10 @@ public class GetCart extends AsyncTask<Void, Void, Void> {
             lock.release();
             line = builder.toString();
         } catch (FileNotFoundException e) {
+
             e.printStackTrace();
+            FileUtils.createNewFile(activity, fileName);
+            return;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -87,7 +92,7 @@ public class GetCart extends AsyncTask<Void, Void, Void> {
             for (int i = 0; i < jsonArray.length(); i++) {
                 data.add(jsonArray.getInt(i));
             }
-        } catch (JSONException |NullPointerException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }

@@ -106,7 +106,6 @@ public class MyCookieStore implements CookieStore {
                 Thread.sleep(200);
             }
 
-            Log.d(TAG, "getCookiesFromFile: lock acquired");
             InputStreamReader reader = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 reader = new InputStreamReader(fin, StandardCharsets.UTF_8);
@@ -181,7 +180,6 @@ public class MyCookieStore implements CookieStore {
             authenticator = new Authenticator(cookie.getValue());
         }
         new WriteToFile().execute();
-        Log.d(TAG, "add: " + new Gson().toJson(cookie));
     }
 
     @Override
@@ -210,7 +208,6 @@ public class MyCookieStore implements CookieStore {
     }
 
     private void createNewFile(File file) {
-
         boolean isCreated;
         try {
             isCreated = file.createNewFile();
@@ -233,7 +230,6 @@ public class MyCookieStore implements CookieStore {
 
                 fout.write(emptyJson.getBytes());
                 fileLock.release();
-                Log.d(TAG, "createNewFile: file created");
             } catch (FileNotFoundException | JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {

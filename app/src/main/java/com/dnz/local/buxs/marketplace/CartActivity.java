@@ -188,10 +188,6 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void removeFromCart(int position) {
-        productIDs.remove(position);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void bindRecyclerViewWithScrollListener_API_GT_23(final RecyclerView recyclerView, final RelativeLayout animationView) {
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
@@ -264,7 +260,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void removeItem(int position) {
-            removeDataFromCart(position);
+            removeDataFromCart(getProductID(position));
             super.removeItem(position);
             productCount.remove(position);
         }
@@ -279,17 +275,22 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
             for (Integer integer : keys) {
                 totalPrice += (super.getProductPriceInt(integer) * productCount.get(integer));
             }
+
             return totalPrice;
         }
 
-        private void removeDataFromCart(int position){
-            int value = getProductID(position);
+        private void removeDataFromCart(int value){
             Object rawData = MyCache.getFromCache("cart-data-arraylist");
 
+            ArrayList<Integer> temp = new ArrayList<>();
             ArrayList<Integer> cartData = (ArrayList<Integer>) rawData;
-            cartData.remove(position);
 
-            MyCache.writeToCache("cart-data-arraylist", cartData);
+            for (int x : cartData){
+                if (x == value) continue;
+                temp.add(x);
+            }
+
+            MyCache.writeToCache("cart-data-arraylist", temp);
             MyCache.saveData("cart-data-arraylist", new WriteToCart(CartActivity.this));
         }
 

@@ -1,7 +1,6 @@
 package com.dnz.local.buxs.marketplace;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +41,8 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView = view.findViewById(R.id.image_view_adapter);
         try {
             imageView.setImageBitmap(context.bitmaps.get(position));
-            Log.d(TAG, "instantiateItem: instantiate item not null"+position);
         } catch (IndexOutOfBoundsException e) {
             imageView.setImageBitmap(null);
-            Log.d(TAG, "instantiateItem: instantiate item null"+position);
         }
 
         ViewPager viewPager = (ViewPager) container;

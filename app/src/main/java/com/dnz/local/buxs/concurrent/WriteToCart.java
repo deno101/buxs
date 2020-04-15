@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 
+import com.dnz.local.buxs.utils.FileUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +30,6 @@ public class WriteToCart extends AsyncTask<Object, Void, Void> {
 
     @Override
     protected Void doInBackground(Object... objects) {
-        boolean isAddedToCart = false;
         if (objects[0] instanceof ArrayList){
             ArrayList<Integer> integers = (ArrayList<Integer>) objects[0];
 
@@ -64,6 +65,8 @@ public class WriteToCart extends AsyncTask<Object, Void, Void> {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            FileUtils.createNewFileAndWrite(activity, filename, "\"cart\":[]");
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

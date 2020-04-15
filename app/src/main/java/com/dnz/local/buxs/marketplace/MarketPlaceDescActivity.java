@@ -227,13 +227,20 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
         if (!cartData.contains(productID)) {
             cartData.add(productID);
+        } else {
+            // Todo: Show error message "Item already exists in cart"
+            Toast.makeText(this, "Item Already exists in cart", Toast.LENGTH_SHORT).show();
         }
+
 
         int count = cartData.size();
         cartCount.setText(String.valueOf(count));
         if (count <= 0) {
             cartCount.setVisibility(View.INVISIBLE);
+        }else{
+            cartCount.setVisibility(View.VISIBLE);
         }
+
 
         MyCache.writeToCache("cart-data-arraylist", cartData);
         MyCache.saveData("cart-data-arraylist", new WriteToCart(this));
