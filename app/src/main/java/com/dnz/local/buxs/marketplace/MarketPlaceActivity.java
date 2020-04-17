@@ -142,7 +142,6 @@ public class MarketPlaceActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Todo: Remap cart-count from cache
         initCartIcon();
     }
 

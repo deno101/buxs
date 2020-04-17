@@ -152,7 +152,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                             viewPagerImages[1] = response.getString("image_url2");
                             viewPagerImages[2] = response.getString("image_url3");
                         } catch (JSONException e) {
-                            Log.d(TAG, "JSONexception " + e.getMessage());
+                            Log.e(TAG, "JSONException " + e.getMessage(), e);
                         }
                         for (String x : viewPagerImages) {
                             String imgUrl = URLBuilder.buildURL("mplace/img", "path=" + x);
@@ -162,7 +162,6 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onResponse(Bitmap response) {
-                                            Log.d(TAG, "onResponse: got image 1");
                                             bitmaps.add(response);
                                             pagerAdapter.notifyDataSetChanged();
                                         }
@@ -171,7 +170,8 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                                         @Override
 
                                         public void onErrorResponse(VolleyError error) {
-                                            Log.d(TAG, "onErrorResponse: " + error.getMessage());
+                                            // Todo: Show image error thumbnail
+                                            Log.e(TAG, "onErrorResponse: " + error.getMessage(), error);
                                         }
                                     });
 
@@ -271,7 +271,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Todo: refresh cartIcon
+        initCartIcon();
     }
 
     public void startCartActivity() {

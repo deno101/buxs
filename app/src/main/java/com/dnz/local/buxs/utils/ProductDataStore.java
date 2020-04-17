@@ -53,7 +53,7 @@ public class ProductDataStore {
         return productName.size();
     }
 
-    public int getProductID(int position){
+    public Integer getProductID(int position){
         return this.productID.get(position);
     }
 

@@ -1,9 +1,7 @@
 package com.dnz.local.buxs.marketplace;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +61,8 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     private String URL = URLBuilder.buildURL("mplace/cart");
 
+    public RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +92,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
         Object temp = MyCache.getFromCache("cart-data-arraylist");
         if (temp instanceof ArrayList) {
-         productIDs = (ArrayList<Integer>) temp;
+            productIDs = (ArrayList<Integer>) temp;
         }
         makeNetworkRequests(productIDs);
     }
@@ -118,11 +117,10 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerview_cart_activity);
+        recyclerView = findViewById(R.id.recyclerview_cart_activity);
         RelativeLayout animationView = findViewById(R.id.cart_total_container);
 
         recyclerView.setAdapter(adapterCartActivity);
-        Log.d(TAG, "initRecyclerView: " + animationView.getMeasuredHeightAndState());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             bindRecyclerViewWithScrollListener_API_GT_23(recyclerView, animationView);
         }
@@ -225,7 +223,6 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                         );
                         canShrinkTotal = true;
                         canEnlargeTotal = false;
-                        Log.d(TAG, "onScrollChange: enlarging");
                     }
                 }
             }
@@ -251,27 +248,35 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     protected class CartProductDataStore extends ProductDataStore {
         private Map<Integer, Integer> productCount = new HashMap<>();
+        private ArrayList<Integer> keys = new ArrayList<>();
 
         @Override
         public synchronized void insertData(int id, String productName, int productPrice, Bitmap productImage, int position) {
             super.insertData(id, productName, productPrice, productImage, position);
             productCount.put(position, 1);
+            keys.add(position);
         }
 
         @Override
         public void removeItem(int position) {
-            removeDataFromCart(getProductID(position));
-            super.removeItem(position);
-            productCount.remove(position);
+            int id = getProductID(position);
+            removeDataFromCart(id);
+
+            Integer mPosition = getKey(position);
+            super.removeItem(mPosition);
+            productCount.remove(mPosition);
+            keys.remove(position);
+
         }
 
         public void setProductCount(int position, int count) {
-            productCount.put(position, count);
+            int mPosition = getKey(position);
+            productCount.put(mPosition, count);
         }
 
-        public int getPrice() {
+        public float getPrice() {
             Set<Integer> keys = productCount.keySet();
-            int totalPrice = 0;
+            float totalPrice = 0F;
             for (Integer integer : keys) {
                 totalPrice += (super.getProductPriceInt(integer) * productCount.get(integer));
             }
@@ -279,13 +284,13 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
             return totalPrice;
         }
 
-        private void removeDataFromCart(int value){
+        private void removeDataFromCart(int value) {
             Object rawData = MyCache.getFromCache("cart-data-arraylist");
 
             ArrayList<Integer> temp = new ArrayList<>();
             ArrayList<Integer> cartData = (ArrayList<Integer>) rawData;
 
-            for (int x : cartData){
+            for (int x : cartData) {
                 if (x == value) continue;
                 temp.add(x);
             }
@@ -294,5 +299,38 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
             MyCache.saveData("cart-data-arraylist", new WriteToCart(CartActivity.this));
         }
 
+        private Integer getKey(int position) {
+            return keys.get(position);
+        }
+
+        @Override
+        public Integer getProductID(int position) {
+            Integer mPosition = getKey(position);
+            return super.getProductID(mPosition);
+        }
+
+        @Override
+        public String getProductName(int position) {
+            Integer mPosition = getKey(position);
+            return super.getProductName(mPosition);
+        }
+
+        @Override
+        public String getProductPrice(int position) {
+            Integer mPosition = getKey(position);
+            return super.getProductPrice(mPosition);
+        }
+
+        @Override
+        public int getProductPriceInt(int position) {
+            Integer mPosition = getKey(position);
+            return super.getProductPriceInt(mPosition);
+        }
+
+        @Override
+        public Bitmap getProductImage(int position) {
+            Integer mPosition = getKey(position);
+            return super.getProductImage(mPosition);
+        }
     }
 }

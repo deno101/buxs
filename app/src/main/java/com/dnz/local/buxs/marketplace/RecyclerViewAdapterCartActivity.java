@@ -1,7 +1,6 @@
 package com.dnz.local.buxs.marketplace;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,13 +43,14 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
         }
 
         // Set Listeners for click action
-        ClickListener clickListener = new ClickListener(holder, position);
+        ClickListener clickListener = new ClickListener(holder);
         holder.addTotal.setOnClickListener(clickListener);
         holder.reduceTotal.setOnClickListener(clickListener);
         holder.containerRemoveItem.setOnClickListener(clickListener);
 
-        int newTotal = cartActivity.productDataStore.getPrice();
+        float newTotal = cartActivity.productDataStore.getPrice();
         ((TextView) cartActivity.findViewById(R.id.cart_total)).setText(Currency.getShilling(newTotal));
+
     }
 
     @Override
@@ -58,10 +58,10 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
         return cartActivity.productDataStore.length();
     }
 
-    public void notifyItemDeleted(int position) {
+    private void notifyItemDeleted(int position) {
         notifyItemRemoved(position);
 
-        int newTotal = cartActivity.productDataStore.getPrice();
+        float newTotal = cartActivity.productDataStore.getPrice();
         ((TextView) cartActivity.findViewById(R.id.cart_total)).setText(Currency.getShilling(newTotal));
     }
 
@@ -90,15 +90,19 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
     // Listener for click action
     private class ClickListener implements View.OnClickListener {
         private ViewHolder holder;
-        private int position;
 
-        private ClickListener(ViewHolder holder, int position) {
+        private ClickListener(ViewHolder holder) {
             this.holder = holder;
-            this.position = position;
         }
 
         @Override
         public void onClick(View v) {
+            int position = holder.getAdapterPosition();
+
+            if (position == RecyclerView.NO_POSITION){
+                throw new IllegalStateException("Position does not exist");
+            }
+
             int count = -1;
             switch (v.getId()) {
                 case R.id.add_to_item_total:
@@ -121,13 +125,12 @@ public class RecyclerViewAdapterCartActivity extends RecyclerView.Adapter<Recycl
 
                     break;
                 case R.id.container_remove_cart_item:
-
                     cartActivity.productDataStore.removeItem(position);
                     notifyItemDeleted(position);
             }
 
             if (count != -1) {
-                int newTotal = cartActivity.productDataStore.getPrice();
+                float newTotal = cartActivity.productDataStore.getPrice();
                 ((TextView) cartActivity.findViewById(R.id.cart_total)).setText(Currency.getShilling(newTotal));
             }
         }
