@@ -1,5 +1,6 @@
 package com.dnz.local.buxs.marketplace;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,6 +63,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     private String URL = URLBuilder.buildURL("mplace/cart");
 
     public RecyclerView recyclerView;
+    private RelativeLayout animationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +120,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recyclerview_cart_activity);
-        RelativeLayout animationView = findViewById(R.id.cart_total_container);
+        animationView = findViewById(R.id.cart_total_container);
 
         recyclerView.setAdapter(adapterCartActivity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -137,7 +139,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
             // create request to get the data associated with a certain id
             JsonObjectRequest dataRequest = new JsonObjectRequest(finalUrl, null,
-                    new CustomJSONResponseListener(itemCount) {
+                    new CustomJSONResponseListener(itemCount, x) {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
@@ -171,6 +173,9 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
                             } catch (JSONException e) {
                                 Log.e(TAG, "onResponse: JSONException", e);
+
+                                MyCache.destroyData("cart-data-arraylist");
+                                finish();
                             }
                         }
                     },
@@ -188,16 +193,39 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void bindRecyclerViewWithScrollListener_API_GT_23(final RecyclerView recyclerView, final RelativeLayout animationView) {
+
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                // Todo: change animation dy direction
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    animationView.animate().translationY(0).setDuration(200).alpha(1.0f).setListener(
+                            new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    super.onAnimationStart(animation);
+                                    recyclerView.setPadding(0, 0, 0, animationView.getHeight());
+                                }
+
+                            });
+                    canShrinkTotal = false;
+                    canEnlargeTotal = true;
+                }
                 int dy = scrollY - oldScrollY;
                 if (dy > 0) {
                     // move upwards
                     if (canShrinkTotal) {
                         animationView.animate().translationY(animationView.getHeight()).setDuration(400).alpha(0.0f).setListener(
                                 new AnimatorListenerAdapter() {
+
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        super.onAnimationStart(animation);
+                                        recyclerView.setPadding(0, 0, 0, 0);
+                                    }
+
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
                                         super.onAnimationEnd(animation);
@@ -216,6 +244,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                                     @Override
                                     public void onAnimationStart(Animator animation) {
                                         super.onAnimationStart(animation);
+                                        recyclerView.setPadding(0, 0, 0, animationView.getHeight());
                                     }
 
                                 }
@@ -227,14 +256,18 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+
     }
 
     // Classes  to help in sorting response data
     private abstract class CustomJSONResponseListener implements Response.Listener<JSONObject> {
         public int productPosition;
+        public Integer productId;
 
-        private CustomJSONResponseListener(int position) {
+        private CustomJSONResponseListener(int position, Integer productId) {
             this.productPosition = position;
+            this.productId = productId;
         }
     }
 

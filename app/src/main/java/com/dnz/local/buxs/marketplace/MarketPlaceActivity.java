@@ -107,7 +107,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
                 // check if reach end of recycler view
                 if (!recyclerView.canScrollVertically(1)) {
-
+                    // Todo: load new content
                 }
             }
         });
