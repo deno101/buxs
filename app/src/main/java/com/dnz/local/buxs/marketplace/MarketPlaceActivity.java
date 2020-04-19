@@ -27,11 +27,11 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
-import com.dnz.local.buxs.concurrent.GetCart;
 import com.dnz.local.buxs.net.URLBuilder;
-import com.dnz.local.buxs.utils.AsyncIFace;
+import com.dnz.local.buxs.utils.MyAnimations;
 import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
+import com.dnz.local.buxs.utils.MyIFace;
 import com.dnz.local.buxs.utils.ProductDataStore;
 
 import org.json.JSONException;
@@ -43,6 +43,7 @@ import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Timer;
 
 public class MarketPlaceActivity extends AppCompatActivity {
 
@@ -53,6 +54,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public RequestQueue requestQueue;
     public RecyclerViewAdapterMarketPlaceActivity viewAdapter;
+
+    private boolean isAnimationShown = false;
 
 
     @Override
@@ -72,6 +75,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
+        MyAnimations.showLoading(this);
 
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
@@ -121,9 +126,9 @@ public class MarketPlaceActivity extends AppCompatActivity {
     public void initCartIcon() {
         Object data = MyCache.getFromCache("cart-data-arraylist");
         ArrayList<Integer> cartData;
-        if (data != null){
-            cartData =  (ArrayList<Integer>) data;
-        }else{
+        if (data != null) {
+            cartData = (ArrayList<Integer>) data;
+        } else {
             throw new IllegalStateException("Invalid Key for cache");
         }
         int count = cartData.size();
@@ -131,9 +136,9 @@ public class MarketPlaceActivity extends AppCompatActivity {
         TextView cartCount = findViewById(R.id.cart_amount);
         cartCount.setText(String.valueOf(count));
 
-        if (count == 0){
+        if (count == 0) {
             cartCount.setVisibility(View.GONE);
-        }else{
+        } else {
             cartCount.setVisibility(View.VISIBLE);
         }
 
@@ -157,6 +162,23 @@ public class MarketPlaceActivity extends AppCompatActivity {
         @Override
         public void onResponse(JSONObject response) {
             Iterator<String> stringIterator = response.keys();
+
+
+            if (!isAnimationShown) {
+                MyAnimations.dismissLoading(MarketPlaceActivity.this);
+                MyAnimations.showSuccess(MarketPlaceActivity.this);
+
+                Timer timer = new Timer();
+                MyIFace.MyTimedClass myTimedClass = new MyIFace.MyTimedClass(MarketPlaceActivity.this, new MyIFace.TaskInterval() {
+                    @Override
+                    public void runOnUiThread(Object... objects) {
+                        MyAnimations.dismissSuccess(MarketPlaceActivity.this);
+                    }
+                });
+
+                timer.schedule(myTimedClass, 2000);
+                isAnimationShown = true;
+            }
 
             // Target position in recycler view
             int position = dataStore.length();
@@ -191,8 +213,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            // TODO: Show red Error message just below the toolbar
-
+            MyAnimations.dismissLoading(MarketPlaceActivity.this);
+            MyAnimations.showError(MarketPlaceActivity.this, error.getClass().getCanonicalName());
         }
     }
 

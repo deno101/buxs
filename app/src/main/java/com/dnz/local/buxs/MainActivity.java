@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.dnz.local.buxs.concurrent.GetCart;
 import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
 import com.dnz.local.buxs.net.MyCookieStore;
-import com.dnz.local.buxs.utils.AsyncIFace;
+import com.dnz.local.buxs.utils.MyIFace;
 import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
 
@@ -21,7 +21,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AsyncIFace.IFGetCartCount {
+public class MainActivity extends AppCompatActivity implements MyIFace.IFGetCartCount {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static MyCookieStore cookieStore;

@@ -10,4 +10,7 @@
     <color name="grey">#F4EFEF</color>
 
     <color name="light_orange">#F39E70</color>
+    <color name="success">#12BD23</color>
+    <color name="error">#DF3939</color>
+    <color name="loading">#F9A825</color>
 </resources>

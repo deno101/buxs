@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +30,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.WriteToCart;
-import com.dnz.local.buxs.concurrent.GetCart;
 import com.dnz.local.buxs.net.URLBuilder;
-import com.dnz.local.buxs.utils.AsyncIFace;
 import com.dnz.local.buxs.utils.Currency;
+import com.dnz.local.buxs.utils.MyAnimations;
 import com.dnz.local.buxs.utils.MyCache;
 import com.dnz.local.buxs.utils.MyDrawerLayout;
+import com.dnz.local.buxs.utils.MyIFace;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +51,6 @@ import java.util.TimerTask;
 public class MarketPlaceDescActivity extends AppCompatActivity {
 
     private static final String TAG = "MarketPlaceDescActivity";
-    private ArrayList<Integer> productsInCart;
 
     private ViewPager viewPager;
     public ArrayList<Bitmap> bitmaps = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-
+        MyAnimations.showLoading(this);
         viewPager = findViewById(R.id.view_pager);
 
         pagerAdapter = new ViewPagerAdapter(this);
@@ -141,6 +141,19 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        MyAnimations.dismissLoading(MarketPlaceDescActivity.this);
+                        MyAnimations.showSuccess(MarketPlaceDescActivity.this);
+
+                        Timer timer = new Timer();
+                        MyIFace.MyTimedClass myTimedClass = new MyIFace.MyTimedClass(MarketPlaceDescActivity.this, new MyIFace.TaskInterval() {
+                            @Override
+                            public void runOnUiThread(Object... objects) {
+                                MyAnimations.dismissSuccess(MarketPlaceDescActivity.this);
+                            }
+                        });
+
+                        timer.schedule(myTimedClass, 2000);
+                        findViewById(R.id.data_container_market_place_desc_activity).setAlpha(1f);
                         try {
                             productID = response.getInt("id");
                             productPrice.setText(Currency.getShilling(response.getString("price")));
@@ -183,7 +196,8 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        MyAnimations.dismissLoading(MarketPlaceDescActivity.this);
+                        MyAnimations.showError(MarketPlaceDescActivity.this, error.getClass().getCanonicalName());
                     }
                 });
         this.requestQueue.add(objectRequest);
@@ -237,7 +251,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         cartCount.setText(String.valueOf(count));
         if (count <= 0) {
             cartCount.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             cartCount.setVisibility(View.VISIBLE);
         }
 
@@ -278,4 +292,5 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         Intent i = new Intent(MarketPlaceDescActivity.this, CartActivity.class);
         startActivity(i);
     }
+
 }

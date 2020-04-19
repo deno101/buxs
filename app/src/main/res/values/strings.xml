@@ -1,4 +1,7 @@
 <resources>
+    <!--    Global-->
+    <string name="success_message">Success</string>
+    <string name="loading_message">Loading</string>
     <string name="app_name">buxs</string>
     <string name="app_name_alt">Bux$</string>
 
@@ -16,6 +19,7 @@
     <!--    market place desc-->
     <string name="buy_now_btn">buy now</string>
 
+    <!--   For DrawerLayout -->
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 </resources>

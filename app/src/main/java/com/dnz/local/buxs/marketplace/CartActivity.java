@@ -32,7 +32,9 @@ import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.WriteToCart;
 import com.dnz.local.buxs.net.URLBuilder;
+import com.dnz.local.buxs.utils.MyAnimations;
 import com.dnz.local.buxs.utils.MyCache;
+import com.dnz.local.buxs.utils.MyIFace;
 import com.dnz.local.buxs.utils.ProductDataStore;
 
 import org.json.JSONException;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
 
 
 public class CartActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,6 +61,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean canEnlargeTotal = false;
     private boolean canShrinkTotal = true;
+    private boolean isAnimationShown = false;
     private ArrayList<Integer> productIDs;
 
     private String URL = URLBuilder.buildURL("mplace/cart");
@@ -80,6 +84,8 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= 21) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
+        MyAnimations.showLoading(this);
 
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network net = new BasicNetwork(new HurlStack());
@@ -142,6 +148,23 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                     new CustomJSONResponseListener(itemCount, x) {
                         @Override
                         public void onResponse(JSONObject response) {
+
+                            if (!isAnimationShown) {
+                                MyAnimations.dismissLoading(CartActivity.this);
+                                MyAnimations.showSuccess(CartActivity.this);
+
+                                Timer timer = new Timer();
+                                MyIFace.MyTimedClass myTimedClass = new MyIFace.MyTimedClass(CartActivity.this, new MyIFace.TaskInterval() {
+                                    @Override
+                                    public void runOnUiThread(Object... objects) {
+                                        MyAnimations.dismissSuccess(CartActivity.this);
+                                    }
+                                });
+
+                                timer.schedule(myTimedClass, 2000);
+                                isAnimationShown = true;
+                            }
+
                             try {
                                 int id = response.getInt("id");
                                 String name = response.getString("name");
@@ -183,6 +206,8 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e(TAG, "onErrorResponse: JsonObjectRequest", error);
+                            MyAnimations.dismissLoading(CartActivity.this);
+                            MyAnimations.showError(CartActivity.this, error.getClass().getCanonicalName());
                         }
                     });
             requestQueue.add(dataRequest);

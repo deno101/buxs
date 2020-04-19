@@ -11,6 +11,8 @@
         android:id="@+id/navbar"
         layout="@layout/toolbar_no_drawer"/>
 
+    <include layout="@layout/information_dialog"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_cart_activity"

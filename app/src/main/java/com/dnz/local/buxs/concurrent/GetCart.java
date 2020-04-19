@@ -2,7 +2,7 @@ package com.dnz.local.buxs.concurrent;
 
 import android.os.AsyncTask;
 
-import com.dnz.local.buxs.utils.AsyncIFace;
+import com.dnz.local.buxs.utils.MyIFace;
 import com.dnz.local.buxs.utils.FileUtils;
 
 import org.json.JSONArray;
@@ -25,12 +25,12 @@ public class GetCart extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "GetCartCount";
 
-    private AsyncIFace.IFGetCartCount ifGetCartCount;
+    private MyIFace.IFGetCartCount ifGetCartCount;
     private ArrayList<Integer> data = new ArrayList<>();
     private AppCompatActivity activity;
     private final String fileName = "cart";
 
-    public GetCart(AsyncIFace.IFGetCartCount ifGetCartCount, AppCompatActivity activity) {
+    public GetCart(MyIFace.IFGetCartCount ifGetCartCount, AppCompatActivity activity) {
         this.ifGetCartCount = ifGetCartCount;
         this.activity = activity;
     }
