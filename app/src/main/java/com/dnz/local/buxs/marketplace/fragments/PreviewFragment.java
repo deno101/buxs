@@ -12,10 +12,10 @@ import com.dnz.local.buxs.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link BasicInfotFragment#newInstance} factory method to
+ * Use the {@link PreviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BasicInfotFragment extends Fragment {
+public class PreviewFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -25,7 +25,7 @@ public class BasicInfotFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public BasicInfotFragment() {
+    public PreviewFragment() {
         // Required empty public constructor
     }
 
@@ -38,8 +38,8 @@ public class BasicInfotFragment extends Fragment {
      * @return A new instance of fragment TestFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BasicInfotFragment newInstance(String param1, String param2) {
-        BasicInfotFragment fragment = new BasicInfotFragment();
+    public static PreviewFragment newInstance(String param1, String param2) {
+        PreviewFragment fragment = new PreviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +59,6 @@ public class BasicInfotFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_basic_info, container, false);
+        return inflater.inflate(R.layout.fragment_preview, container, false);
     }
 }
