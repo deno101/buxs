@@ -214,7 +214,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
         @Override
         public void onErrorResponse(VolleyError error) {
             MyAnimations.dismissLoading(MarketPlaceActivity.this);
-            MyAnimations.showError(MarketPlaceActivity.this, error.getClass().getCanonicalName());
+            MyAnimations.showError(MarketPlaceActivity.this, error.getCause().getClass()
+                    .getCanonicalName());
         }
     }
 

@@ -202,12 +202,13 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     },
+
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e(TAG, "onErrorResponse: JsonObjectRequest", error);
                             MyAnimations.dismissLoading(CartActivity.this);
-                            MyAnimations.showError(CartActivity.this, error.getClass().getCanonicalName());
+                            MyAnimations.showError(CartActivity.this, error.getCause().getClass().getCanonicalName());
                         }
                     });
             requestQueue.add(dataRequest);

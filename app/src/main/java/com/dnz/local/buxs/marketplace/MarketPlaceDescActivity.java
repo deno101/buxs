@@ -197,7 +197,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         MyAnimations.dismissLoading(MarketPlaceDescActivity.this);
-                        MyAnimations.showError(MarketPlaceDescActivity.this, error.getClass().getCanonicalName());
+                        MyAnimations.showError(MarketPlaceDescActivity.this, error.getCause().getClass().getCanonicalName());
                     }
                 });
         this.requestQueue.add(objectRequest);

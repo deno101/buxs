@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class URLBuilder {
-    private static final String IP = "188.166.54.33";
+    private static final String IP = "192.168.43.210";
     private static final String PORT = "443";
 
     public static String buildURL(String path) {
