@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.marketplace.fragments.CameraCaptureFragment;
+import com.dnz.local.buxs.marketplace.fragments.DescriptionFragment;
 
 public class AddProductActivity extends AppCompatActivity {
 
@@ -19,7 +20,7 @@ public class AddProductActivity extends AppCompatActivity {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        cameraFragment = new CameraCaptureFragment();
+        cameraFragment = new DescriptionFragment();
 
         if (savedInstanceState == null){
             ft.add(R.id.fragment_container, cameraFragment).commit();

@@ -8,28 +8,28 @@
     tools:context=".marketplace.fragments.CameraCaptureFragment">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/image_3_for_add_product"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@drawable/ic_add_a_photo"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@+id/image_2_for_add_product"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintStart_toEndOf="@+id/image_2_for_add_product"
+        app:layout_constraintTop_toTopOf="@+id/image_2_for_add_product"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/image_2_for_add_product"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:src="@drawable/ic_add_a_photo"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/image_3_for_add_product"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/image_1_for_add_product"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <LinearLayout
@@ -55,6 +55,7 @@
             android:src="@drawable/ic_eye" />
 
         <TextView
+            android:id="@+id/preview_btn_for_add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="8dp"
@@ -70,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textSize="16sp"
         android:text="Name:"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/button" />
@@ -82,7 +84,7 @@
         app:layout_constraintGuide_percent="0.05109489" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/product_name_for_add_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -96,12 +98,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textSize="16sp"
         android:text="Price: "
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/product_name_for_add_product" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/price_for_add_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -118,21 +121,21 @@
         android:src="@drawable/ic_baseline_image_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintTop_toBottomOf="@+id/price_for_add_product" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/image_1_for_add_product"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:src="@drawable/ic_add_a_photo"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@+id/image_2_for_add_product"
+        app:layout_constraintEnd_toStartOf="@+id/image_2_for_add_product"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/image_2_for_add_product"
         app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
@@ -147,15 +150,17 @@
         android:background="@drawable/bg_for_preview_btn"
         android:padding="8dp"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:elevation="5dp">
 
         <TextView
+            android:id="@+id/next_btn_for_add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next"
             android:paddingLeft="8dp"
+            android:text="Next"
             android:textColor="@color/white"
-            android:textSize="18dp"/>
+            android:textSize="18dp" />
 
         <ImageView
             android:paddingLeft="8dp"
