@@ -1,25 +1,27 @@
-package com.dnz.local.buxs.marketplace;
+package com.dnz.local.buxs.marketplace.fragments;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.marketplace.AddProductActivity;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class ViewPagerAdapter extends PagerAdapter {
+public class ViewPagerAdapterPreviewFragment extends PagerAdapter {
     private static final String TAG = "ViewPagerAdapter";
 
-    private MarketPlaceDescActivity context;
+    private PreviewFragment fragment;
     private LayoutInflater inflater;
 
-    public ViewPagerAdapter(MarketPlaceDescActivity context) {
-        this.context = context;
+    public ViewPagerAdapterPreviewFragment(PreviewFragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
@@ -35,14 +37,18 @@ public class ViewPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) fragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.adapter_layout, null);
 
         ImageView imageView = view.findViewById(R.id.image_view_adapter);
         try {
-            imageView.setImageBitmap(context.bitmaps.get(position));
+            AddProductActivity addProductActivity= ((AddProductActivity) fragment.getActivity());
+            imageView.setImageBitmap(addProductActivity.productImages[position]);
         } catch (IndexOutOfBoundsException e) {
             imageView.setImageBitmap(null);
+        }catch (Exception e){
+            imageView.setImageBitmap(null);
+            Log.e(TAG, "instantiateItem: error", e);
         }
 
         ViewPager viewPager = (ViewPager) container;

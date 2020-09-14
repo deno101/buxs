@@ -1,14 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/data_container_market_place_desc_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".marketplace.fragments.PreviewFragment">
+    tools:context=".marketplace.MarketPlaceDescActivity"
+    android:background="@color/white">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:padding="2dp">
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <LinearLayout
+        android:id="@+id/slider_indicators"
+        android:layout_width="40dp"
+        android:layout_height="13dp"
+        android:layout_below="@id/view_pager"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-20dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/item_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="1.5dp"
+            android:layout_weight="1"
+            android:background="@drawable/image_slider_bg" />
+
+        <View
+            android:id="@+id/item_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="1.5dp"
+            android:layout_weight="1"
+            android:background="@drawable/image_slider_bg" />
+
+        <View
+            android:id="@+id/item_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="1.5dp"
+            android:layout_weight="1"
+            android:background="@drawable/image_slider_bg" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/image_slider_border_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/view_pager"
+        android:background="@color/grey" />
+
+    <ScrollView
+        android:id="@+id/marketplace_desc_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_below="@id/image_slider_border_bottom">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:text="Name:"/>
+
+            <TextView
+                android:id="@+id/product_brand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginTop="-5dp"
+                android:textSize="16dp"
+                android:text="Brand:"/>
+
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:text="Price: "
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Description:"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/product_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textSize="16dp" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

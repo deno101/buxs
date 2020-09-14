@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +54,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
     private ViewPager viewPager;
     public ArrayList<Bitmap> bitmaps = new ArrayList<>();
     public View[] selectorViews = new View[3];
-    private ViewPagerAdapter pagerAdapter;
+    private ViewPagerAdapterMarketPlaceDesc pagerAdapter;
     public TextView productDesc, productPrice, productName, productBrand;
     private RequestQueue requestQueue;
     private String[] viewPagerImages = new String[3];
@@ -87,7 +86,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         MyAnimations.showLoading(this);
         viewPager = findViewById(R.id.view_pager);
 
-        pagerAdapter = new ViewPagerAdapter(this);
+        pagerAdapter = new ViewPagerAdapterMarketPlaceDesc(this);
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

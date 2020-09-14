@@ -1,64 +1,128 @@
 package com.dnz.local.buxs.marketplace.fragments;
 
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.marketplace.AddProductActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PreviewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PreviewFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TAG = "PreviewFragment";
 
-    public PreviewFragment() {
-        // Required empty public constructor
+    private PreviewFragment(){}
+
+    public AddProductActivity parentActivity;
+
+    public PreviewFragment(AddProductActivity parentActivity) {
+        this.parentActivity = parentActivity;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TestFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PreviewFragment newInstance(String param1, String param2) {
-        PreviewFragment fragment = new PreviewFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private View[] selectorViews = new View[3];
+    private View layoutView;
+    private ViewPager viewPager;
+    private ViewPagerAdapterPreviewFragment pagerAdapter;
+
+    private TextView productDesc, productPrice, productName, productBrand;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_preview, container, false);
+        layoutView = inflater.inflate(R.layout.fragment_preview, container, false);
+
+        /* init all the view elements */
+        selectorViews[0] = layoutView.findViewById(R.id.item_1);
+        selectorViews[1] = layoutView.findViewById(R.id.item_2);
+        selectorViews[2] = layoutView.findViewById(R.id.item_3);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            initViewPager();
+        }
+
+        productPrice = layoutView.findViewById(R.id.product_price);
+        productBrand = layoutView.findViewById(R.id.product_brand);
+        productDesc = layoutView.findViewById(R.id.product_description);
+        productName = layoutView.findViewById(R.id.product_name);
+
+
+        return layoutView;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void initViewPager() {
+        viewPager = layoutView.findViewById(R.id.view_pager);
+
+        pagerAdapter = new ViewPagerAdapterPreviewFragment(this);
+        viewPager.setAdapter(pagerAdapter);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Reset all dots to unselected
+                for (View x : selectorViews) {
+                    x.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.image_slider_bg));
+                }
+
+                //Set page selected  to on_select bg
+                selectorViews[position].setBackground(ContextCompat.getDrawable(getContext(), R.drawable.image_slider_bg_onselect));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+
+        });
+
+        selectorViews[0].setBackground(ContextCompat.getDrawable(getContext(), R.drawable.image_slider_bg_onselect));
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new PreviewFragment.MyTimer(), 5000, 8000);
+    }
+
+    // Timer to handle auto scroll if images
+    public class MyTimer extends TimerTask {
+
+        @Override
+        public void run() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (viewPager.getCurrentItem() == 0) {
+                        viewPager.setCurrentItem(1);
+                    } else if (viewPager.getCurrentItem() == 1) {
+                        viewPager.setCurrentItem(2);
+                    } else {
+                        viewPager.setCurrentItem(0);
+                    }
+                }
+            });
+        }
     }
 }

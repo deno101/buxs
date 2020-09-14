@@ -5,12 +5,86 @@
     android:id="@+id/preview_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".marketplace.fragments.CameraCaptureFragment">
+    tools:context=".marketplace.fragments.CameraCaptureFragment"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/col1"
+        android:elevation="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/back_toolbar_no_drawer"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_keyboard_arrow_left_white_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/more_toolbar_no_drawer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_for_preview_btn"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_eye"
+            android:drawableLeft="@drawable/ic_eye"
+            android:elevation="5dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/more_toolbar_no_drawer"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_eye" />
+
+            <TextView
+                android:id="@+id/preview_btn_for_add_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingLeft="8dp"
+                android:text="Preview"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/image_3_for_add_product"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:background="@drawable/border_for_add_image"
+        android:padding="5dp"
         android:src="@drawable/ic_add_a_photo"
         app:layout_constraintBottom_toBottomOf="@+id/image_2_for_add_product"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,58 +97,27 @@
         android:id="@+id/image_2_for_add_product"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:background="@drawable/border_for_add_image"
+        android:padding="5dp"
         android:src="@drawable/ic_add_a_photo"
         app:layout_constraintEnd_toStartOf="@+id/image_3_for_add_product"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/image_1_for_add_product"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageview_for_add_product" />
 
-    <LinearLayout
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/bg_for_preview_btn"
-        android:clickable="true"
-        android:drawableStart="@drawable/ic_eye"
-        android:drawableLeft="@drawable/ic_eye"
-        android:elevation="5dp"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_eye" />
-
-        <TextView
-            android:id="@+id/preview_btn_for_add_product"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingLeft="8dp"
-            android:text="Preview"
-            android:textColor="#FFF"
-            android:textSize="18sp" />
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp"
+        android:layout_marginTop="8dp"
         android:text="Name:"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -98,8 +141,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="16sp"
         android:text="Price: "
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/product_name_for_add_product" />
 
@@ -114,14 +157,16 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageview_for_add_product"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/ic_baseline_image_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/price_for_add_product" />
+        app:layout_constraintTop_toBottomOf="@+id/price_for_add_product"
+        android:background="@drawable/border_for_image"
+        android:padding="5dp"/>
 
     <ImageView
         android:id="@+id/image_1_for_add_product"
@@ -129,6 +174,8 @@
         android:layout_height="32dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:background="@drawable/border_for_add_image"
+        android:padding="5dp"
         android:src="@drawable/ic_add_a_photo"
         app:layout_constraintBottom_toBottomOf="@+id/image_2_for_add_product"
         app:layout_constraintEnd_toStartOf="@+id/image_2_for_add_product"
@@ -144,14 +191,14 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/bg_for_preview_btn"
-        android:padding="8dp"
         android:clickable="true"
+        android:elevation="5dp"
         android:focusable="true"
-        android:elevation="5dp">
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/next_btn_for_add_product"
@@ -163,10 +210,10 @@
             android:textSize="18dp" />
 
         <ImageView
-            android:paddingLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_arrow_forward_24"/>
+            android:paddingLeft="8dp"
+            android:src="@drawable/ic_baseline_arrow_forward_24" />
     </LinearLayout>
 
 
