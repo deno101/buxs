@@ -51,8 +51,6 @@
             android:layout_marginRight="8dp"
             android:background="@drawable/bg_for_preview_btn"
             android:clickable="true"
-            android:drawableStart="@drawable/ic_eye"
-            android:drawableLeft="@drawable/ic_eye"
             android:elevation="5dp"
             android:paddingHorizontal="8dp"
             android:paddingVertical="8dp"
@@ -151,7 +149,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Price"
+        android:hint="Enter Price"
         android:inputType="number"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />

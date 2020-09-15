@@ -17,18 +17,20 @@ import android.widget.TextView;
 
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.marketplace.AddProductActivity;
+import com.dnz.local.buxs.utils.Currency;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PreviewFragment extends Fragment {
+public class PreviewFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "PreviewFragment";
 
     private PreviewFragment(){}
 
     public AddProductActivity parentActivity;
+    private Timer timer;
 
     public PreviewFragment(AddProductActivity parentActivity) {
         this.parentActivity = parentActivity;
@@ -65,6 +67,16 @@ public class PreviewFragment extends Fragment {
         productDesc = layoutView.findViewById(R.id.product_description);
         productName = layoutView.findViewById(R.id.product_name);
 
+        ((TextView) layoutView.findViewById(R.id.title_toolbar_no_drawer)).setText("Preview");
+
+        productPrice.setText(Currency.getShilling(parentActivity.productPrice));
+        productDesc.setText(parentActivity.productDescription);
+        productBrand.setText(parentActivity.productBrand);
+        productName.setText(parentActivity.productName);
+
+        /*Set onclick listeners*/
+        layoutView.findViewById(R.id.submit_for_preview_fragment).setOnClickListener(this);
+        layoutView.findViewById(R.id.back_toolbar_no_drawer).setOnClickListener(this);
 
         return layoutView;
     }
@@ -102,9 +114,29 @@ public class PreviewFragment extends Fragment {
 
         selectorViews[0].setBackground(ContextCompat.getDrawable(getContext(), R.drawable.image_slider_bg_onselect));
 
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new PreviewFragment.MyTimer(), 5000, 8000);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timer.cancel();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.submit_for_preview_fragment:
+                parentActivity.sendPost();
+                break;
+            case R.id.back_toolbar_no_drawer:
+                getFragmentManager().popBackStack();
+                break;
+        }
+    }
+
 
     // Timer to handle auto scroll if images
     public class MyTimer extends TimerTask {

@@ -5,13 +5,18 @@
     android:id="@+id/data_container_market_place_desc_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".marketplace.MarketPlaceDescActivity"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".marketplace.MarketPlaceDescActivity">
+
+    <include
+        android:id="@+id/navbar_for_preview"
+        layout="@layout/toolbar_no_drawer" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_below="@id/navbar_for_preview"
         android:padding="2dp">
 
     </androidx.viewpager.widget.ViewPager>
@@ -76,9 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="5dp"
                 android:layout_marginBottom="5dp"
+                android:text="Name:"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:text="Name:"/>
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/product_brand"
@@ -86,18 +91,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="5dp"
                 android:layout_marginTop="-5dp"
-                android:textSize="16dp"
-                android:text="Brand:"/>
+                android:text="Brand:"
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
                 android:text="Price: "
-                />
+                android:textColor="@android:color/black"
+                android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -117,6 +121,16 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/submit_for_preview_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_for_preview_btn"
+        android:text="Submit"
+        android:layout_margin="24dp"/>
 
 
 </RelativeLayout>

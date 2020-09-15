@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.marketplace.AddProductActivity;
 import com.dnz.local.buxs.utils.Const;
+import com.dnz.local.buxs.utils.Currency;
 import com.dnz.local.buxs.utils.Permissions;
 import com.dnz.local.buxs.utils.Random;
 
@@ -94,11 +95,13 @@ public class CameraCaptureFragment extends Fragment implements View.OnClickListe
                 captureImage(IMAGE_THREE);
                 break;
             case R.id.preview_btn_for_add_product:
-                // TODO: 9/14/20 put the preview fragment to front of stack
+                preview();
                 break;
             case R.id.next_btn_for_add_product:
                 next();
                 break;
+            case R.id.back_toolbar_no_drawer:
+                parentActivity.finish();
         }
     }
 
@@ -117,10 +120,21 @@ public class CameraCaptureFragment extends Fragment implements View.OnClickListe
 
     private void next() {
         boolean hasError = checkForm();
-        if (!hasError){
-            FragmentTransaction ft= parentActivity.getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.fragment_container, parentActivity.descriptionFragment).addToBackStack(null).commit();
+        if (!hasError) {
+            populateData();
+            FragmentTransaction ft = parentActivity.getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.fragment_container, parentActivity.descriptionFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
+    }
+
+    private void preview() {
+        populateData();
+        FragmentTransaction ft = parentActivity.getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.fragment_container, parentActivity.previewFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public void setImage(Bitmap bitmap) {
@@ -150,18 +164,18 @@ public class CameraCaptureFragment extends Fragment implements View.OnClickListe
 
     private boolean checkForm() {
         boolean error = false;
-        if (productName.getText().toString().trim().equalsIgnoreCase("")){
-         productName.setError("Required");
-         error = true;
+        if (productName.getText().toString().trim().equalsIgnoreCase("")) {
+            productName.setError("Required");
+            error = true;
         }
 
-        if (productPrice.getText().toString().trim().equalsIgnoreCase("")){
+        if (productPrice.getText().toString().trim().equalsIgnoreCase("")) {
             productPrice.setError("Required");
             error = true;
         }
 
-        for (Bitmap x: parentActivity.productImages){
-            if (x == null){
+        for (Bitmap x : parentActivity.productImages) {
+            if (x == null) {
                 error = true;
                 Toast.makeText(parentActivity, "Three Images Required!!", Toast.LENGTH_LONG).show();
                 break;
@@ -169,5 +183,10 @@ public class CameraCaptureFragment extends Fragment implements View.OnClickListe
         }
 
         return error;
+    }
+
+    private void populateData() {
+        parentActivity.productName = productName.getText().toString().trim().toUpperCase();
+        parentActivity.productPrice = productPrice.getText().toString().trim();
     }
 }
