@@ -17,7 +17,7 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
 
     private AddProductActivity parentActivity;
     private EditText productBrand, productDescription;
-
+    private View layoutContainer;
 
     private DescriptionFragment(){}
 
@@ -33,7 +33,16 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_description, container, false);
+        layoutContainer = inflater.inflate(R.layout.fragment_description, container, false);
+
+        productBrand = layoutContainer.findViewById(R.id.brand_for_add_product);
+        productDescription = layoutContainer.findViewById(R.id.description_for_add_product);
+
+        layoutContainer.findViewById(R.id.next_btn_for_add_product).setOnClickListener(this);
+        layoutContainer.findViewById(R.id.preview_btn_for_add_product).setOnClickListener(this);
+        layoutContainer.findViewById(R.id.back_toolbar_no_drawer).setOnClickListener(this);
+
+        return layoutContainer;
     }
 
 
@@ -54,6 +63,7 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
 
     private void next(){
         if (!hasErrors()){
+            populateData();
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.add(R.id.fragment_container, parentActivity.previewFragment)
                     .addToBackStack(null)

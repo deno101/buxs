@@ -29,6 +29,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
+import com.dnz.local.buxs.LoginActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.marketplace.fragments.CameraCaptureFragment;
 import com.dnz.local.buxs.marketplace.fragments.DescriptionFragment;
@@ -37,6 +38,7 @@ import com.dnz.local.buxs.net.URLBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +129,7 @@ public class AddProductActivity extends AppCompatActivity {
         ByteArrayOutputStream outputStream[] = new ByteArrayOutputStream[3];
         int i = 0;
         for (Bitmap x : productImages) {
+            outputStream[i] = new ByteArrayOutputStream();
             x.compress(Bitmap.CompressFormat.JPEG, 100, outputStream[i]);
             i++;
         }
@@ -140,7 +143,7 @@ public class AddProductActivity extends AppCompatActivity {
 
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = super.getParams();
+                Map<String, String> params = new HashMap<>();
                 params.put("name", productName);
                 params.put("price", productPrice);
                 params.put("desc", productDescription);
@@ -169,7 +172,13 @@ public class AddProductActivity extends AppCompatActivity {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            Toast.makeText(AddProductActivity.this, "Error", Toast.LENGTH_LONG).show();
+            if (error.networkResponse.statusCode == 403){
+                Intent intent = new Intent(AddProductActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+            Log.d(TAG, "onErrorResponse: statusCode "+ error.networkResponse.statusCode);
+            Log.e(TAG, "onErrorResponse: ", error);
+            Toast.makeText(AddProductActivity.this, "Error failed to connect", Toast.LENGTH_LONG).show();
         }
 
 
@@ -179,6 +188,7 @@ public class AddProductActivity extends AppCompatActivity {
                 Toast.makeText(AddProductActivity.this, "Error", Toast.LENGTH_LONG).show();
                 return;
             }
+
             finish();
         }
     }

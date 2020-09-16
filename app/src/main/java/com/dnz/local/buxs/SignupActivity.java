@@ -50,7 +50,7 @@ public class SignupActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        CookieStore cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MyCookieStore.getInstance(this);
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 

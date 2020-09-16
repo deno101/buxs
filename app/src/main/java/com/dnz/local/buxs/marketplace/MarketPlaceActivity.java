@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -27,6 +28,8 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.concurrent.GetCart;
+import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.MyAnimations;
 import com.dnz.local.buxs.utils.MyCache;
@@ -45,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
 
-public class MarketPlaceActivity extends AppCompatActivity {
+public class MarketPlaceActivity extends AppCompatActivity implements MyIFace.IFGetCartCount {
 
     public static final String TAG = "MarketPlaceActivity";
 
@@ -63,9 +66,14 @@ public class MarketPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_place);
 
+        // Init app Cache
+        MyCache.startCache();
+
+        new GetCart(this, this).execute();
+
         new MyDrawerLayout(this).initDrawerLayout();
 
-        CookieStore cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MyCookieStore.getInstance(this);
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
@@ -122,6 +130,12 @@ public class MarketPlaceActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onPostExecuteThread(ArrayList<Integer> data) {
+        MyCache.writeToCache("cart-data-arraylist", data);
+        initCartIcon();
+    }
+
 
     public void initCartIcon() {
         Object data = MyCache.getFromCache("cart-data-arraylist");
@@ -129,7 +143,8 @@ public class MarketPlaceActivity extends AppCompatActivity {
         if (data != null) {
             cartData = (ArrayList<Integer>) data;
         } else {
-            throw new IllegalStateException("Invalid Key for cache");
+            return;
+//            throw new IllegalStateException("Invalid Key for cache");
         }
         int count = cartData.size();
 
@@ -214,8 +229,15 @@ public class MarketPlaceActivity extends AppCompatActivity {
         @Override
         public void onErrorResponse(VolleyError error) {
             MyAnimations.dismissLoading(MarketPlaceActivity.this);
-            MyAnimations.showError(MarketPlaceActivity.this, error.getCause().getClass()
-                    .getCanonicalName());
+            try {
+                MyAnimations.showError(MarketPlaceActivity.this, error.getCause().getClass()
+                        .getCanonicalName());
+
+            } catch (NullPointerException e) {
+                MyAnimations.showError(MarketPlaceActivity.this, "Failed to connect" );
+            }
+
+            Log.e(TAG, "onErrorResponse: error", error);
         }
     }
 

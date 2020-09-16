@@ -25,18 +25,20 @@
         <activity
             android:name=".marketplace.AddProductActivity"
             android:screenOrientation="nosensor">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".marketplace.MarketPlaceDescActivity"
             android:screenOrientation="nosensor" />
         <activity
             android:name=".marketplace.MarketPlaceActivity"
-            android:screenOrientation="nosensor" />
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="nosensor" />

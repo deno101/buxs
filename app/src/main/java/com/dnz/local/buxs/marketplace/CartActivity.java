@@ -31,6 +31,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dnz.local.buxs.MainActivity;
 import com.dnz.local.buxs.R;
 import com.dnz.local.buxs.concurrent.WriteToCart;
+import com.dnz.local.buxs.net.MyCookieStore;
 import com.dnz.local.buxs.net.URLBuilder;
 import com.dnz.local.buxs.utils.MyAnimations;
 import com.dnz.local.buxs.utils.MyCache;
@@ -74,7 +75,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        CookieStore cookieStore = MainActivity.getCookieStore();
+        CookieStore cookieStore = MyCookieStore.getInstance(this);
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 

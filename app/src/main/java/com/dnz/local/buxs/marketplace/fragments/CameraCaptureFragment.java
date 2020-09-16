@@ -71,6 +71,7 @@ public class CameraCaptureFragment extends Fragment implements View.OnClickListe
         image_3.setOnClickListener(this);
         layoutContainer.findViewById(R.id.next_btn_for_add_product).setOnClickListener(this);
         layoutContainer.findViewById(R.id.preview_btn_for_add_product).setOnClickListener(this);
+        layoutContainer.findViewById(R.id.back_toolbar_no_drawer).setOnClickListener(this);
 
         instance = this;
 

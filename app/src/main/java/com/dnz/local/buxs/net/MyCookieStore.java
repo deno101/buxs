@@ -45,12 +45,22 @@ public class MyCookieStore implements CookieStore {
     }
 
     private final String fileName = "cookieStore";
+    private static MyCookieStore instance;
 
-    public MyCookieStore(Context context) {
+    private MyCookieStore(Context context) {
         this.context = context;
 
         store = new CookieManager().getCookieStore();
         new ReadTask().execute();
+    }
+
+    private MyCookieStore(){}
+
+    public static MyCookieStore getInstance(Context context) {
+        if (instance == null) {
+            instance = new MyCookieStore(context);
+        }
+        return instance;
     }
 
     private void saveCookieToFile() {
@@ -73,7 +83,7 @@ public class MyCookieStore implements CookieStore {
                     Thread.currentThread();
                     Thread.sleep(200);
                 }
-            }catch (OverlappingFileLockException e){
+            } catch (OverlappingFileLockException e) {
                 saveCookieToFile();
                 return;
             }

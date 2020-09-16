@@ -21,7 +21,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MyIFace.IFGetCartCount {
+public class MainActivity extends AppCompatActivity implements MyIFace.IFGetCartCount{
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static MyCookieStore cookieStore;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MyIFace.IFGetCart
         new MyDrawerLayout(this).initDrawerLayout();
         findViewById(R.id.cart_toolbar_container).setVisibility(View.INVISIBLE);
 
-        cookieStore = new MyCookieStore(this);
+//        cookieStore = new MyCookieStore(this);
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
@@ -63,9 +63,6 @@ public class MainActivity extends AppCompatActivity implements MyIFace.IFGetCart
         startActivity(new Intent(MainActivity.this, MarketPlaceActivity.class));
     }
 
-    public static MyCookieStore getCookieStore() {
-        return cookieStore;
-    }
 
     @Override
     public void onPostExecuteThread(ArrayList<Integer> data) {

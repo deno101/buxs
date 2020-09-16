@@ -27,10 +27,9 @@ public class PreviewFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "PreviewFragment";
 
-    private PreviewFragment(){}
-
     public AddProductActivity parentActivity;
     private Timer timer;
+    private PreviewFragment(){}
 
     public PreviewFragment(AddProductActivity parentActivity) {
         this.parentActivity = parentActivity;
