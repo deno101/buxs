@@ -209,7 +209,13 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                         public void onErrorResponse(VolleyError error) {
                             Log.e(TAG, "onErrorResponse: JsonObjectRequest", error);
                             MyAnimations.dismissLoading(CartActivity.this);
-                            MyAnimations.showError(CartActivity.this, error.getCause().getClass().getCanonicalName());
+                            try {
+
+                                MyAnimations.showError(CartActivity.this, error.getCause().getClass().getCanonicalName());
+                            } catch (NullPointerException e) {
+                                MyAnimations.showError(CartActivity.this, "Failed to connect");
+
+                            }
                         }
                     });
             requestQueue.add(dataRequest);

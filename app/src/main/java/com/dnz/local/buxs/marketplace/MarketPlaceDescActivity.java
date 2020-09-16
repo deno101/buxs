@@ -197,7 +197,7 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         MyAnimations.dismissLoading(MarketPlaceDescActivity.this);
-                        MyAnimations.showError(MarketPlaceDescActivity.this, error.getCause().getClass().getCanonicalName());
+                        MyAnimations.showError(MarketPlaceDescActivity.this, "Failed to connect.");
                     }
                 });
         this.requestQueue.add(objectRequest);
