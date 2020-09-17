@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     private boolean canShrinkTotal = true;
     private boolean isAnimationShown = false;
     private ArrayList<Integer> productIDs;
+    public float price = 0;
 
     private String URL = URLBuilder.buildURL("mplace/cart");
 
@@ -117,6 +119,13 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Clicked on more", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    public void openPay(View v){
+        Intent i = new Intent(CartActivity.this, MpesaPhoneActivity.class);
+        i.putExtra("Price", Float.toString(price));
+
+        startActivity(i);
     }
 
     // Link view components with this instance of View.OnClickListeners
@@ -346,7 +355,7 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
             for (Integer integer : keys) {
                 totalPrice += (super.getProductPriceInt(integer) * productCount.get(integer));
             }
-
+            price = totalPrice;
             return totalPrice;
         }
 

@@ -54,18 +54,19 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/phone_number"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_for_phone_input"
         android:ems="10"
         android:hint="eg 254716864539"
         android:inputType="phone"
         android:paddingLeft="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mpesa_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/price" />
 
     <TextView
         android:id="@+id/textView5"
@@ -87,7 +88,18 @@
         android:padding="5dp"
         android:layout_marginTop="16dp"
         android:text="Pay"
-        app:layout_constraintEnd_toEndOf="@+id/editTextPhone"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
+        android:onClick="pay"
+        app:layout_constraintEnd_toEndOf="@+id/phone_number"
+        app:layout_constraintTop_toBottomOf="@+id/phone_number" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/phone_number"
+        app:layout_constraintTop_toBottomOf="@+id/mpesa_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -293,4 +293,8 @@ public class MarketPlaceDescActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void openCart(View v){
+        startCartActivity();
+    }
+
 }
