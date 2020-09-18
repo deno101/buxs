@@ -1,0 +1,220 @@
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="10dp"
+    android:fitsSystemWindows="true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/information_dialog"/>
+
+        <RelativeLayout
+            android:id="@+id/data_container_market_place_desc_activity"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="?attr/actionBarSize"
+            tools:context=".marketplace.MarketPlaceDescActivity"
+            android:alpha="0">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:padding="2dp">
+
+            </androidx.viewpager.widget.ViewPager>
+
+            <LinearLayout
+                android:id="@+id/slider_indicators"
+                android:layout_width="40dp"
+                android:layout_height="13dp"
+                android:layout_below="@id/view_pager"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-20dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/item_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1.5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/image_slider_bg" />
+
+                <View
+                    android:id="@+id/item_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1.5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/image_slider_bg" />
+
+                <View
+                    android:id="@+id/item_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1.5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/image_slider_bg" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/image_slider_border_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/view_pager"
+                android:background="@color/grey" />
+
+            <ScrollView
+                android:id="@+id/marketplace_desc_scrollview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bottom_bar_border"
+                android:layout_below="@id/image_slider_border_bottom">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_baseline_access_time_24"/>
+
+                        <TextView
+                            android:id="@+id/delivery_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:paddingLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/product_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="24sp"
+
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="Description:"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/product_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="16dp"/>
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+            <View
+                android:id="@+id/bottom_bar_border"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_above="@id/bottom_bar"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+
+                <ImageButton
+                    android:onClick="addToCart"
+                    android:id="@+id/add_to_cart"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cart_btn_bg"
+                    android:src="@drawable/img_cart_orange" />
+
+                <Button
+                    android:id="@+id/buy_now"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginVertical="0dp"
+                    android:layout_weight="3"
+                    android:text="@string/buy_now_btn"
+                    android:onClick="openCart"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/col1"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <include layout="@layout/toolbar_for_drawer_l" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+    </FrameLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

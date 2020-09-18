@@ -39,7 +39,9 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,7 +58,7 @@ public class FastFoodDescActivity extends AppCompatActivity {
     public ArrayList<Bitmap> bitmaps = new ArrayList<>();
     public View[] selectorViews = new View[3];
     private ViewPagerAdapterFastFoodDesc pagerAdapter;
-    public TextView productDesc, productPrice, productName, productBrand;
+    public TextView productDesc, productPrice, productName, deliveryTime;
     private RequestQueue requestQueue;
     private String[] viewPagerImages = new String[3];
     public TextView cartCount;
@@ -66,7 +68,7 @@ public class FastFoodDescActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_market_place_desc);
+        setContentView(R.layout.activity_fast_food_desc);
 
         CookieStore cookieStore = MyCookieStore.getInstance(this);
         CookieManager cookieManager = new CookieManager(cookieStore, CookiePolicy.ACCEPT_ALL);
@@ -125,9 +127,9 @@ public class FastFoodDescActivity extends AppCompatActivity {
 
         //init vars
         productPrice = findViewById(R.id.product_price);
-        productBrand = findViewById(R.id.product_brand);
         productDesc = findViewById(R.id.product_description);
         productName = findViewById(R.id.product_name);
+        deliveryTime = findViewById(R.id.delivery_time);
 
         requestQueue.start();
         String productId = getIntent().getStringExtra("PRODUCT_ID");
@@ -136,11 +138,13 @@ public class FastFoodDescActivity extends AppCompatActivity {
     }
 
     private void fetchData(String productId) {
-        String productUrl = URLBuilder.buildURL("mplace/gdesc", "pid=" + productId);
+        String productUrl = URLBuilder.buildURL("food/get/" + productId);
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, productUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        Log.d(TAG, "onResponse: " + response.toString());
                         MyAnimations.dismissLoading(FastFoodDescActivity.this);
                         MyAnimations.showSuccess(FastFoodDescActivity.this);
 
@@ -158,8 +162,13 @@ public class FastFoodDescActivity extends AppCompatActivity {
                             productID = response.getInt("id");
                             productPrice.setText(Currency.getShilling(response.getString("price")));
                             productDesc.setText(response.getString("description"));
-                            productBrand.setText(String.format("Brand : %s", response.getString("brand")));
                             productName.setText(response.getString("name"));
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("H 'hrs' M 'min'");
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTimeInMillis(response.getInt("delivery_time") * 60 * 1000);
+
+                            deliveryTime.setText(sdf.format(cal.getTime()));
 
                             viewPagerImages[0] = response.getString("image_url1");
                             viewPagerImages[1] = response.getString("image_url2");
@@ -168,7 +177,7 @@ public class FastFoodDescActivity extends AppCompatActivity {
                             Log.e(TAG, "JSONException " + e.getMessage(), e);
                         }
                         for (String x : viewPagerImages) {
-                            String imgUrl = URLBuilder.buildURL("mplace/img", "path=" + x);
+                            String imgUrl = URLBuilder.buildURL("food/img", "path=" + x);
 
                             ImageRequest imageRequest1 = new ImageRequest(imgUrl,
                                     new Response.Listener<Bitmap>() {
@@ -293,7 +302,7 @@ public class FastFoodDescActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void openCart(View v){
+    public void openCart(View v) {
         startCartActivity();
     }
 

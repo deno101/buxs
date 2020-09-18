@@ -97,7 +97,7 @@ public class FastFoodActivity extends AppCompatActivity implements MyIFace.IFGet
         initCartIcon();
 
         // Make http request
-        String getDataURL = URLBuilder.buildURL("mplace/gdata");
+        String getDataURL = URLBuilder.buildURL("food/get");
         CustomJSONResponseListener jsonResponseListener = new CustomJSONResponseListener();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getDataURL, null, jsonResponseListener, jsonResponseListener);
         requestQueue.add(jsonObjectRequest);
@@ -210,7 +210,7 @@ public class FastFoodActivity extends AppCompatActivity implements MyIFace.IFGet
                     dataStore.insertData(id, name, price, null, position);
                     viewAdapter.notifyItemInserted(position);
 
-                    String finalImageUrl = URLBuilder.buildURL("mplace/img", "path=" + imageUrl);
+                    String finalImageUrl = URLBuilder.buildURL("food/img", "path=" + imageUrl);
                     // Make the http request for the image
                     CustomImageResponseListener responseListener = new CustomImageResponseListener(position);
                     ImageRequest imageRequest = new ImageRequest(finalImageUrl, responseListener,

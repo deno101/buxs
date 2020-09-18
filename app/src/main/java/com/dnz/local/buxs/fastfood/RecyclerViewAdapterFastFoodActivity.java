@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapterFastFoodActivity extends RecyclerView.Adapter<RecyclerViewAdapterFastFoodActivity.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
-    private FastFoodActivity marketPlaceActivity;
+    private FastFoodActivity fastFoodActivity;
 
-    public RecyclerViewAdapterFastFoodActivity(FastFoodActivity marketPlaceActivity) {
-      this.marketPlaceActivity = marketPlaceActivity;
+    public RecyclerViewAdapterFastFoodActivity(FastFoodActivity fastFoodActivity) {
+      this.fastFoodActivity = fastFoodActivity;
     }
 
     @NonNull
@@ -33,27 +33,27 @@ public class RecyclerViewAdapterFastFoodActivity extends RecyclerView.Adapter<Re
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Bitmap bitmap = marketPlaceActivity.dataStore.getProductImage(position);
+        Bitmap bitmap = fastFoodActivity.dataStore.getProductImage(position);
         if (bitmap != null){
             holder.progressBar.setVisibility(View.GONE);
         }
         holder.thumbnailImage.setImageBitmap(bitmap);
-        holder.price.setText(Currency.getShilling(marketPlaceActivity.dataStore.getProductPrice(position)));
-        holder.itemName.setText(marketPlaceActivity.dataStore.getProductName(position));
+        holder.price.setText(Currency.getShilling(fastFoodActivity.dataStore.getProductPrice(position)));
+        holder.itemName.setText(fastFoodActivity.dataStore.getProductName(position));
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(marketPlaceActivity, FastFoodDescActivity.class);
-                intent.putExtra("PRODUCT_ID",String.valueOf(marketPlaceActivity.dataStore.getProductID(position)));
-                marketPlaceActivity.startActivity(intent);
+                Intent intent = new Intent(fastFoodActivity, FastFoodDescActivity.class);
+                intent.putExtra("PRODUCT_ID",String.valueOf(fastFoodActivity.dataStore.getProductID(position)));
+                fastFoodActivity.startActivity(intent);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return marketPlaceActivity.dataStore.length();
+        return fastFoodActivity.dataStore.length();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
