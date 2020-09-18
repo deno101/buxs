@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import com.dnz.local.buxs.LoginActivity;
 import com.dnz.local.buxs.R;
+import com.dnz.local.buxs.fastfood.FastFoodActivity;
+import com.dnz.local.buxs.marketplace.AddProductActivity;
 import com.dnz.local.buxs.marketplace.CartActivity;
 import com.dnz.local.buxs.marketplace.MarketPlaceActivity;
 import com.dnz.local.buxs.marketplace.MarketPlaceDescActivity;
@@ -53,12 +55,32 @@ public class MyDrawerLayout implements NavigationView.OnNavigationItemSelectedLi
         drawerToggle.syncState();
 
         navigationView.getHeaderView(0).findViewById(R.id.login_button_drawer_layout).setOnClickListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Todo: set listeners for all the menu items
-        return false;
+        switch (item.getItemId()) {
+            case R.id.upload_item:
+                context.startActivity(new Intent(context, AddProductActivity.class));
+                drawerLayout.closeDrawers();
+                break;
+
+            case R.id.to_fast_food:
+                context.startActivity(new Intent(context, FastFoodActivity.class));
+                drawerLayout.closeDrawers();
+                break;
+
+            case R.id.to_market_place:
+                context.startActivity(new Intent(context, MarketPlaceActivity.class));
+                drawerLayout.closeDrawers();
+                break;
+
+            default:
+                Toast.makeText(context, "To-be Implemented.", Toast.LENGTH_LONG).show();
+                break;
+        }
+        return true;
     }
 
     private void setToolbarListeners() {
